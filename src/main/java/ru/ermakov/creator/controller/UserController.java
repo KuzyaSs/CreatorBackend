@@ -27,7 +27,13 @@ public class UserController {
     }
 
     @PostMapping
-    public Integer addUser(@RequestBody SignUpData signUpData) {
+    public Long addUser(@RequestBody SignUpData signUpData) {
         return userService.addUser(signUpData);
+    }
+
+    @PutMapping
+    public Long editUser(@RequestBody User user) {
+        Long num = userService.editUser(user);
+        return num;
     }
 }

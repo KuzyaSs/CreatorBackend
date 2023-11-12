@@ -15,6 +15,6 @@ public class User {
     private String email;
     private String about;
     private String profileAvatarUrl;
-    private String backgroundAvatarUrl;
+    private String profileBackgroundUrl;
     private LocalDate registrationDate;
 }

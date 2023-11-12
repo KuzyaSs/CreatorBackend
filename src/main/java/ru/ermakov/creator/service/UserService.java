@@ -10,5 +10,7 @@ public interface UserService {
 
     User getUserById(Long userId);
 
-    Integer addUser(SignUpData signUpData);
+    Long addUser(SignUpData signUpData);
+
+    Long editUser(User user);
 }

@@ -28,7 +28,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Integer addUser(SignUpData signUpData) {
+    public Long addUser(SignUpData signUpData) {
         return userDao.insertUser(signUpData);
+    }
+
+    @Override
+    public Long editUser(User user) {
+        if (!userDao.userExistsById(user.getId())) {
+            throw new UserNotFoundException(String.format("User with id %s not found", user.getId()));
+        }
+        return userDao.updateUser(user);
     }
 }

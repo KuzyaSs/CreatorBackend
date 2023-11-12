@@ -54,16 +54,53 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Integer insertUser(SignUpData signUpData) {
+    public Boolean userExistsById(Long userId) {
+        String sql = """
+                SELECT EXISTS(
+                    SELECT 1
+                    FROM users
+                    WHERE id = :id
+                )
+                    """;
+
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
+                .addValue(ID_COLUMN, userId);
+
+        return jdbcTemplate.queryForObject(sql, sqlParameterSource, Boolean.class);
+    }
+
+    @Override
+    public Long insertUser(SignUpData signUpData) {
         String sql = """
                 INSERT INTO users(username, email)
-                VALUES(:username, :email) RETURNING ID
+                VALUES(:username, :email) RETURNING id
                      """;
 
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
                 .addValue(USERNAME_COLUMN, signUpData.username())
                 .addValue(EMAIL_COLUMN, signUpData.email());
 
-        return jdbcTemplate.queryForObject(sql, sqlParameterSource, Integer.class);
+        return jdbcTemplate.queryForObject(sql, sqlParameterSource, Long.class);
+    }
+
+    @Override
+    public Long updateUser(User user) {
+        String sql = """
+                UPDATE users
+                SET username = :username,
+                    about = :about,
+                    profile_avatar_url = :profile_avatar_url,
+                    profile_background_url = :profile_background_url
+                WHERE id = :id RETURNING id
+                     """;
+
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
+                .addValue(ID_COLUMN, user.getId())
+                .addValue(USERNAME_COLUMN, user.getUsername())
+                .addValue(ABOUT_COLUMN, user.getAbout())
+                .addValue(PROFILE_AVATAR_URL_COLUMN, user.getProfileAvatarUrl())
+                .addValue(PROFILE_BACKGROUND_URL_COLUMN, user.getProfileBackgroundUrl());
+
+        return jdbcTemplate.queryForObject(sql, sqlParameterSource, Long.class);
     }
 }

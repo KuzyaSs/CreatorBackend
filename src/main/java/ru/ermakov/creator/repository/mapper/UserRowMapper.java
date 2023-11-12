@@ -17,7 +17,7 @@ public class UserRowMapper implements RowMapper<User> {
                 rs.getString(EMAIL_COLUMN),
                 rs.getString(ABOUT_COLUMN),
                 rs.getString(PROFILE_AVATAR_URL_COLUMN),
-                rs.getString(BACKGROUND_AVATAR_URL_COLUMN),
+                rs.getString(PROFILE_BACKGROUND_URL_COLUMN),
                 rs.getTimestamp(REGISTRATION_DATE_COLUMN).toLocalDateTime().toLocalDate()
         );
     }

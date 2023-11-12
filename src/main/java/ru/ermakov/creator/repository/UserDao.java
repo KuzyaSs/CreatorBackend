@@ -11,5 +11,9 @@ public interface UserDao {
 
     Optional<User> getUserById(Long userId);
 
-    Integer insertUser(SignUpData signUpData);
+    Boolean userExistsById(Long userId);
+
+    Long insertUser(SignUpData signUpData);
+
+    Long updateUser(User user);
 }
