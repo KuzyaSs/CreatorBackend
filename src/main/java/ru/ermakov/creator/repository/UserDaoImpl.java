@@ -4,14 +4,14 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
-import ru.ermakov.creator.model.SignUpData;
+import ru.ermakov.creator.model.AuthUser;
 import ru.ermakov.creator.model.User;
 import ru.ermakov.creator.repository.mapper.UserRowMapper;
 
 import java.util.List;
 import java.util.Optional;
 
-import static ru.ermakov.creator.repository.Constants.*;
+import static ru.ermakov.creator.repository.ColumnNameConstants.*;
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -21,27 +21,25 @@ public class UserDaoImpl implements UserDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    // fix
     @Override
-    public List<User> getUsersByPage(Integer currentId, Integer limit) {
+    public List<User> getUsersByPage(Integer limit, Integer offset) {
         String sql = String.format("""
                 SELECT *
-                FROM users
-                WHERE id > :id
-                ORDER BY id
+                FROM public.user
+                ORDER BY registration_date
                 LIMIT %s
-                    """, limit);
+                OFFSET %s
+                    """, limit, offset);
 
-        SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
-                .addValue(ID_COLUMN, currentId);
-
-        return jdbcTemplate.query(sql, sqlParameterSource, new UserRowMapper());
+        return jdbcTemplate.query(sql, new UserRowMapper());
     }
 
     @Override
-    public Optional<User> getUserById(Long userId) {
+    public Optional<User> getUserById(String userId) {
         String sql = """
                 SELECT *
-                FROM users
+                FROM public.user
                 WHERE id = :id
                     """;
 
@@ -54,11 +52,11 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Boolean userExistsById(Long userId) {
+    public Boolean userExistsById(String userId) {
         String sql = """
                 SELECT EXISTS(
                     SELECT 1
-                    FROM users
+                    FROM public.user
                     WHERE id = :id
                 )
                     """;
@@ -70,37 +68,55 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Long insertUser(SignUpData signUpData) {
+    public Boolean checkUsernameUniqueness(String username, String currentUserId) {
         String sql = """
-                INSERT INTO users(username, email)
-                VALUES(:username, :email) RETURNING id
-                     """;
+                SELECT NOT EXISTS(
+                    SELECT 1
+                    FROM public.user
+                    WHERE username = :username AND id != :id
+                )
+                    """;
 
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
-                .addValue(USERNAME_COLUMN, signUpData.username())
-                .addValue(EMAIL_COLUMN, signUpData.email());
+                .addValue(USERNAME_COLUMN, username)
+                .addValue(ID_COLUMN, currentUserId);
 
-        return jdbcTemplate.queryForObject(sql, sqlParameterSource, Long.class);
+        return jdbcTemplate.queryForObject(sql, sqlParameterSource, Boolean.class);
     }
 
     @Override
-    public Long updateUser(User user) {
+    public void insertUser(AuthUser authUser) {
         String sql = """
-                UPDATE users
+                INSERT INTO public.user(id, username, email)
+                VALUES(:id, :username, :email)
+                     """;
+
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
+                .addValue(ID_COLUMN, authUser.id())
+                .addValue(USERNAME_COLUMN, authUser.username())
+                .addValue(EMAIL_COLUMN, authUser.email());
+
+        jdbcTemplate.update(sql, sqlParameterSource);
+    }
+
+    @Override
+    public void updateUser(User user) {
+        String sql = """
+                UPDATE public.user
                 SET username = :username,
-                    about = :about,
+                    bio = :bio,
                     profile_avatar_url = :profile_avatar_url,
                     profile_background_url = :profile_background_url
-                WHERE id = :id RETURNING id
+                WHERE id = :id
                      """;
 
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
                 .addValue(ID_COLUMN, user.getId())
                 .addValue(USERNAME_COLUMN, user.getUsername())
-                .addValue(ABOUT_COLUMN, user.getAbout())
+                .addValue(BIO_COLUMN, user.getBio())
                 .addValue(PROFILE_AVATAR_URL_COLUMN, user.getProfileAvatarUrl())
                 .addValue(PROFILE_BACKGROUND_URL_COLUMN, user.getProfileBackgroundUrl());
 
-        return jdbcTemplate.queryForObject(sql, sqlParameterSource, Long.class);
+        jdbcTemplate.update(sql, sqlParameterSource);
     }
 }

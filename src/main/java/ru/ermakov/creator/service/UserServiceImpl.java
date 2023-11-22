@@ -2,7 +2,8 @@ package ru.ermakov.creator.service;
 
 import org.springframework.stereotype.Service;
 import ru.ermakov.creator.exception.UserNotFoundException;
-import ru.ermakov.creator.model.SignUpData;
+import ru.ermakov.creator.exception.UsernameInUseException;
+import ru.ermakov.creator.model.AuthUser;
 import ru.ermakov.creator.model.User;
 import ru.ermakov.creator.repository.UserDao;
 
@@ -17,26 +18,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getUsersByPage(Integer currentId, Integer limit) {
-        return userDao.getUsersByPage(currentId, limit);
+    public List<User> getUsersByPage(Integer limit, Integer offset) {
+        return userDao.getUsersByPage(limit, offset);
     }
 
     @Override
-    public User getUserById(Long userId) {
+    public User getUserById(String userId) {
         return userDao.getUserById(userId)
                 .orElseThrow(() -> new UserNotFoundException(String.format("User with id %s not found", userId)));
     }
 
     @Override
-    public Long addUser(SignUpData signUpData) {
-        return userDao.insertUser(signUpData);
+    public void insertUser(AuthUser authUser) {
+        userDao.insertUser(authUser);
     }
 
     @Override
-    public Long editUser(User user) {
+    public void updateUser(User user) {
         if (!userDao.userExistsById(user.getId())) {
             throw new UserNotFoundException(String.format("User with id %s not found", user.getId()));
         }
-        return userDao.updateUser(user);
+        if (!userDao.checkUsernameUniqueness(user.getUsername(), user.getId())) {
+            throw new UsernameInUseException(String.format("User with username %s exists", user.getUsername()));
+        }
+        userDao.updateUser(user);
     }
 }

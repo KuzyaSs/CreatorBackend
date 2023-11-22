@@ -10,11 +10,12 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
-    private Long id;
+    private String id;
     private String username;
     private String email;
-    private String about;
+    private String bio;
     private String profileAvatarUrl;
     private String profileBackgroundUrl;
+    private Boolean isModerator;
     private LocalDate registrationDate;
 }

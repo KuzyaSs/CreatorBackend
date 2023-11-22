@@ -1,16 +1,16 @@
 package ru.ermakov.creator.service;
 
-import ru.ermakov.creator.model.SignUpData;
+import ru.ermakov.creator.model.AuthUser;
 import ru.ermakov.creator.model.User;
 
 import java.util.List;
 
 public interface UserService {
-    public List<User> getUsersByPage(Integer currentId, Integer limit);
+    List<User> getUsersByPage(Integer limit, Integer offset);
 
-    User getUserById(Long userId);
+    User getUserById(String userId);
 
-    Long addUser(SignUpData signUpData);
+    void insertUser(AuthUser authUser);
 
-    Long editUser(User user);
+    void updateUser(User user);
 }

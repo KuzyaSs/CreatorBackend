@@ -1,6 +1,7 @@
 package ru.ermakov.creator.model;
 
-public record SignUpData(
+public record AuthUser(
+        String id,
         String username,
         String email
 ) {

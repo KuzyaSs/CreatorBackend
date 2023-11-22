@@ -1,7 +1,7 @@
 package ru.ermakov.creator.controller;
 
 import org.springframework.web.bind.annotation.*;
-import ru.ermakov.creator.model.SignUpData;
+import ru.ermakov.creator.model.AuthUser;
 import ru.ermakov.creator.model.User;
 import ru.ermakov.creator.service.UserService;
 
@@ -17,23 +17,22 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> getUsers(@RequestParam Integer currentId, @RequestParam Integer limit) {
-        return userService.getUsersByPage(currentId, limit);
+    public List<User> getUsers(@RequestParam Integer limit, @RequestParam Integer offset) {
+        return userService.getUsersByPage(limit, offset);
     }
 
     @GetMapping("{userId}")
-    public User getUserById(@PathVariable Long userId) {
+    public User getUserById(@PathVariable String userId) {
         return userService.getUserById(userId);
     }
 
     @PostMapping
-    public Long addUser(@RequestBody SignUpData signUpData) {
-        return userService.addUser(signUpData);
+    public void insertUser(@RequestBody AuthUser authUser) {
+        userService.insertUser(authUser);
     }
 
     @PutMapping
-    public Long editUser(@RequestBody User user) {
-        Long num = userService.editUser(user);
-        return num;
+    public void updateUser(@RequestBody User user) {
+        userService.updateUser(user);
     }
 }

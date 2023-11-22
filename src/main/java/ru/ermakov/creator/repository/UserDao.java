@@ -1,19 +1,21 @@
 package ru.ermakov.creator.repository;
 
-import ru.ermakov.creator.model.SignUpData;
+import ru.ermakov.creator.model.AuthUser;
 import ru.ermakov.creator.model.User;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface UserDao {
-    List<User> getUsersByPage(Integer currentId, Integer limit);
+    List<User> getUsersByPage(Integer limit, Integer offset);
 
-    Optional<User> getUserById(Long userId);
+    Optional<User> getUserById(String userId);
 
-    Boolean userExistsById(Long userId);
+    Boolean userExistsById(String userId);
 
-    Long insertUser(SignUpData signUpData);
+    Boolean checkUsernameUniqueness(String username, String currentUserId);
 
-    Long updateUser(User user);
+    void insertUser(AuthUser authUser);
+
+    void updateUser(User user);
 }
