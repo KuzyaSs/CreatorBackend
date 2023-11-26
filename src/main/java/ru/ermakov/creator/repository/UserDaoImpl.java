@@ -24,7 +24,7 @@ public class UserDaoImpl implements UserDao {
     // fix
     @Override
     public List<User> getUsersByPage(Integer limit, Integer offset) {
-        String sql = String.format("""
+        String query = String.format("""
                 SELECT *
                 FROM public.user
                 ORDER BY registration_date
@@ -32,28 +32,27 @@ public class UserDaoImpl implements UserDao {
                 OFFSET %s
                     """, limit, offset);
 
-        return jdbcTemplate.query(sql, new UserRowMapper());
+        return jdbcTemplate.query(query, new UserRowMapper());
     }
 
     @Override
     public Optional<User> getUserById(String userId) {
-        String sql = """
+        String query = """
                 SELECT *
                 FROM public.user
                 WHERE id = :id
                     """;
 
-        SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
-                .addValue(ID_COLUMN, userId);
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource(ID_COLUMN, userId);
 
-        return jdbcTemplate.query(sql, sqlParameterSource, new UserRowMapper())
+        return jdbcTemplate.query(query, sqlParameterSource, new UserRowMapper())
                 .stream()
                 .findFirst();
     }
 
     @Override
     public Boolean userExistsById(String userId) {
-        String sql = """
+        String query = """
                 SELECT EXISTS(
                     SELECT 1
                     FROM public.user
@@ -61,15 +60,14 @@ public class UserDaoImpl implements UserDao {
                 )
                     """;
 
-        SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
-                .addValue(ID_COLUMN, userId);
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource(ID_COLUMN, userId);
 
-        return jdbcTemplate.queryForObject(sql, sqlParameterSource, Boolean.class);
+        return jdbcTemplate.queryForObject(query, sqlParameterSource, Boolean.class);
     }
 
     @Override
     public Boolean checkUsernameUniqueness(String username, String currentUserId) {
-        String sql = """
+        String query = """
                 SELECT NOT EXISTS(
                     SELECT 1
                     FROM public.user
@@ -81,12 +79,12 @@ public class UserDaoImpl implements UserDao {
                 .addValue(USERNAME_COLUMN, username)
                 .addValue(ID_COLUMN, currentUserId);
 
-        return jdbcTemplate.queryForObject(sql, sqlParameterSource, Boolean.class);
+        return jdbcTemplate.queryForObject(query, sqlParameterSource, Boolean.class);
     }
 
     @Override
     public void insertUser(AuthUser authUser) {
-        String sql = """
+        String query = """
                 INSERT INTO public.user(id, username, email)
                 VALUES(:id, :username, :email)
                      """;
@@ -96,12 +94,12 @@ public class UserDaoImpl implements UserDao {
                 .addValue(USERNAME_COLUMN, authUser.username())
                 .addValue(EMAIL_COLUMN, authUser.email());
 
-        jdbcTemplate.update(sql, sqlParameterSource);
+        jdbcTemplate.update(query, sqlParameterSource);
     }
 
     @Override
     public void updateUser(User user) {
-        String sql = """
+        String query = """
                 UPDATE public.user
                 SET username = :username,
                     bio = :bio,
@@ -117,6 +115,6 @@ public class UserDaoImpl implements UserDao {
                 .addValue(PROFILE_AVATAR_URL_COLUMN, user.getProfileAvatarUrl())
                 .addValue(PROFILE_BACKGROUND_URL_COLUMN, user.getProfileBackgroundUrl());
 
-        jdbcTemplate.update(sql, sqlParameterSource);
+        jdbcTemplate.update(query, sqlParameterSource);
     }
 }

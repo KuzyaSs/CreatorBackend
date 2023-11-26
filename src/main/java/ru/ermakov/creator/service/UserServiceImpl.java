@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(String userId) {
         return userDao.getUserById(userId)
-                .orElseThrow(() -> new UserNotFoundException(String.format("User with id %s not found", userId)));
+                .orElseThrow(UserNotFoundException::new);
     }
 
     @Override
@@ -36,10 +36,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUser(User user) {
         if (!userDao.userExistsById(user.getId())) {
-            throw new UserNotFoundException(String.format("User with id %s not found", user.getId()));
+            throw new UserNotFoundException();
         }
         if (!userDao.checkUsernameUniqueness(user.getUsername(), user.getId())) {
-            throw new UsernameInUseException(String.format("User with username %s exists", user.getUsername()));
+            throw new UsernameInUseException();
         }
         userDao.updateUser(user);
     }
