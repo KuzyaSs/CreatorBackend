@@ -1,10 +1,8 @@
 package ru.ermakov.creator.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.ermakov.creator.model.Category;
+import ru.ermakov.creator.model.UserCategory;
 import ru.ermakov.creator.service.CategoryService;
 
 import java.util.List;
@@ -18,13 +16,18 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
-    @GetMapping("category")
+    @GetMapping("categories")
     public List<Category> getAllCategories() {
         return categoryService.getAllCategories();
     }
 
-    @GetMapping("user/{userId}/category")
-    public List<Category> getUserCategories(@PathVariable String userId) {
-        return categoryService.getUserCategories(userId);
+    @GetMapping("users/{userId}/categories")
+    public List<UserCategory> getUserCategoriesByUserId(@PathVariable String userId) {
+        return categoryService.getUserCategoriesByUserId(userId);
+    }
+
+    @PutMapping("users/{userId}/categories")
+    public void updateUserCategories(@RequestBody List<UserCategory> userCategories) {
+        categoryService.updateUserCategories(userCategories);
     }
 }
