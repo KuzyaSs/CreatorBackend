@@ -33,7 +33,7 @@ public class CategoryDaoImpl implements CategoryDao {
     @Override
     public List<UserCategory> getUserCategoriesByUserId(String userId) {
         String query = """
-                SELECT category.id, category.name, :user_id AS user_id,
+                SELECT category.id, category.name,
                     CASE WHEN category.id IN (
                         SELECT user_category.category_id
                         FROM user_category
@@ -48,7 +48,7 @@ public class CategoryDaoImpl implements CategoryDao {
     }
 
     @Override
-    public void updateUserCategories(List<UserCategory> userCategories) {
+    public void updateUserCategories(String userId, List<UserCategory> userCategories) {
         String query = """
                 INSERT INTO user_category
                 VALUES (:user_id, :category_id, :is_selected)
@@ -58,7 +58,7 @@ public class CategoryDaoImpl implements CategoryDao {
 
         MapSqlParameterSource[] sqlParameterSources = userCategories.stream().map(userCategory ->
                 new MapSqlParameterSource()
-                        .addValue(USER_ID_COLUMN, userCategory.userId())
+                        .addValue(USER_ID_COLUMN, userId)
                         .addValue(CATEGORY_ID_COLUMN, userCategory.id())
                         .addValue(IS_SELECTED_COLUMN, userCategory.isSelected())
         ).toArray(MapSqlParameterSource[]::new);

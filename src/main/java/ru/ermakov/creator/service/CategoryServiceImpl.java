@@ -33,7 +33,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public void updateUserCategories(List<UserCategory> userCategories) {
-        categoryDao.updateUserCategories(userCategories);
+    public void updateUserCategories(String userId, List<UserCategory> userCategories) {
+        categoryDao.updateUserCategories(userId, userCategories);
     }
 }

@@ -10,5 +10,5 @@ public interface CategoryDao {
 
     List<UserCategory> getUserCategoriesByUserId(String userId);
 
-    void updateUserCategories(List<UserCategory> userCategories);
+    void updateUserCategories(String userId, List<UserCategory> userCategories);
 }

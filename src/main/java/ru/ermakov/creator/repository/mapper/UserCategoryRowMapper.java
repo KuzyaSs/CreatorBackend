@@ -14,7 +14,6 @@ public class UserCategoryRowMapper implements RowMapper<UserCategory> {
         return new UserCategory(
                 rs.getLong(ID_COLUMN),
                 rs.getString(NAME_COLUMN),
-                rs.getString(USER_ID_COLUMN),
                 rs.getBoolean(IS_SELECTED_COLUMN)
         );
     }

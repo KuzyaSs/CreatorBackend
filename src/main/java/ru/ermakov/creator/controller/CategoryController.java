@@ -27,7 +27,7 @@ public class CategoryController {
     }
 
     @PutMapping("users/{userId}/categories")
-    public void updateUserCategories(@RequestBody List<UserCategory> userCategories) {
-        categoryService.updateUserCategories(userCategories);
+    public void updateUserCategories(@PathVariable String userId, @RequestBody List<UserCategory> userCategories) {
+        categoryService.updateUserCategories(userId, userCategories);
     }
 }
