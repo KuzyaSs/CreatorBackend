@@ -5,9 +5,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 import ru.ermakov.creator.model.Category;
-import ru.ermakov.creator.model.UserCategory;
 import ru.ermakov.creator.repository.mapper.CategoryRowMapper;
-import ru.ermakov.creator.repository.mapper.UserCategoryRowMapper;
 
 import java.util.List;
 
@@ -24,14 +22,14 @@ public class CategoryDaoImpl implements CategoryDao {
     @Override
     public List<Category> getAllCategories() {
         String query = """
-                SELECT id, name
+                SELECT id, name, FALSE AS is_selected
                 FROM category
                 """;
         return jdbcTemplate.query(query, new CategoryRowMapper());
     }
 
     @Override
-    public List<UserCategory> getUserCategoriesByUserId(String userId) {
+    public List<Category> getCategoriesByUserId(String userId) {
         String query = """
                 SELECT category.id, category.name,
                     CASE WHEN category.id IN (
@@ -44,11 +42,11 @@ public class CategoryDaoImpl implements CategoryDao {
                 FROM category
                 """;
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource(USER_ID_COLUMN, userId);
-        return jdbcTemplate.query(query, sqlParameterSource, new UserCategoryRowMapper());
+        return jdbcTemplate.query(query, sqlParameterSource, new CategoryRowMapper());
     }
 
     @Override
-    public void updateUserCategories(String userId, List<UserCategory> userCategories) {
+    public void updateCategories(String userId, List<Category> categories) {
         String query = """
                 INSERT INTO user_category
                 VALUES (:user_id, :category_id, :is_selected)
@@ -56,11 +54,11 @@ public class CategoryDaoImpl implements CategoryDao {
                 SET is_selected = excluded.is_selected
                 """;
 
-        MapSqlParameterSource[] sqlParameterSources = userCategories.stream().map(userCategory ->
+        MapSqlParameterSource[] sqlParameterSources = categories.stream().map(category ->
                 new MapSqlParameterSource()
                         .addValue(USER_ID_COLUMN, userId)
-                        .addValue(CATEGORY_ID_COLUMN, userCategory.id())
-                        .addValue(IS_SELECTED_COLUMN, userCategory.isSelected())
+                        .addValue(CATEGORY_ID_COLUMN, category.id())
+                        .addValue(IS_SELECTED_COLUMN, category.isSelected())
         ).toArray(MapSqlParameterSource[]::new);
         jdbcTemplate.batchUpdate(query, sqlParameterSources);
     }

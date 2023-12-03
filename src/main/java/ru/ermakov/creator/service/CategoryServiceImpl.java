@@ -3,7 +3,6 @@ package ru.ermakov.creator.service;
 import org.springframework.stereotype.Service;
 import ru.ermakov.creator.exception.UserNotFoundException;
 import ru.ermakov.creator.model.Category;
-import ru.ermakov.creator.model.UserCategory;
 import ru.ermakov.creator.repository.CategoryDao;
 import ru.ermakov.creator.repository.UserDao;
 
@@ -25,15 +24,15 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<UserCategory> getUserCategoriesByUserId(String userId) {
+    public List<Category> getCategoriesByUserId(String userId) {
         if (!userDao.userExistsById(userId)) {
             throw new UserNotFoundException();
         }
-        return categoryDao.getUserCategoriesByUserId(userId);
+        return categoryDao.getCategoriesByUserId(userId);
     }
 
     @Override
-    public void updateUserCategories(String userId, List<UserCategory> userCategories) {
-        categoryDao.updateUserCategories(userId, userCategories);
+    public void updateCategories(String userId, List<Category> categories) {
+        categoryDao.updateCategories(userId, categories);
     }
 }

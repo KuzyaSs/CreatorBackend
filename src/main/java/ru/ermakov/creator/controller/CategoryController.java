@@ -2,7 +2,6 @@ package ru.ermakov.creator.controller;
 
 import org.springframework.web.bind.annotation.*;
 import ru.ermakov.creator.model.Category;
-import ru.ermakov.creator.model.UserCategory;
 import ru.ermakov.creator.service.CategoryService;
 
 import java.util.List;
@@ -22,12 +21,12 @@ public class CategoryController {
     }
 
     @GetMapping("users/{userId}/categories")
-    public List<UserCategory> getUserCategoriesByUserId(@PathVariable String userId) {
-        return categoryService.getUserCategoriesByUserId(userId);
+    public List<Category> getCategoriesByUserId(@PathVariable String userId) {
+        return categoryService.getCategoriesByUserId(userId);
     }
 
     @PutMapping("users/{userId}/categories")
-    public void updateUserCategories(@PathVariable String userId, @RequestBody List<UserCategory> userCategories) {
-        categoryService.updateUserCategories(userId, userCategories);
+    public void updateCategories(@PathVariable String userId, @RequestBody List<Category> categories) {
+        categoryService.updateCategories(userId, categories);
     }
 }
