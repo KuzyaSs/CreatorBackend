@@ -1,7 +1,7 @@
 package ru.ermakov.creator.model;
 
 
-public record FollowerRequest(
+public record FollowRequest(
         String userId,
         String creatorId
 ) {

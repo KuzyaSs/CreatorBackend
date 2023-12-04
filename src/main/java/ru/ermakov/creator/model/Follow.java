@@ -1,12 +1,12 @@
 package ru.ermakov.creator.model;
 
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
-public record Follower(
+public record Follow(
         Long id,
         User user,
         User creator,
-        LocalDateTime startDate
+        LocalDate startDate
 ) {
 }

@@ -21,7 +21,6 @@ public class UserDaoImpl implements UserDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    // fix
     @Override
     public List<User> getUsersByPage(Integer limit, Integer offset) {
         String query = String.format("""
@@ -85,8 +84,8 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void insertUser(AuthUser authUser) {
         String query = """
-                INSERT INTO public.user(id, username, email)
-                VALUES(:id, :username, :email)
+                INSERT INTO public.user (id, username, email)
+                VALUES (:id, :username, :email)
                      """;
 
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource()

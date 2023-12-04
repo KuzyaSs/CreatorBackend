@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 
 @ControllerAdvice
 public class ApiExceptionHandler {
-    @ExceptionHandler(value = {UserNotFoundException.class})
-    public ResponseEntity<Object> handleUserNotFoundException(RuntimeException e, HttpServletRequest request) {
+    @ExceptionHandler(value = {UserNotFoundException.class, FollowNotFoundException.class})
+    public ResponseEntity<Object> handleNotFoundException(RuntimeException e, HttpServletRequest request) {
         ApiExceptionBody apiExceptionBody = new ApiExceptionBody(
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND.value(),
@@ -22,7 +22,7 @@ public class ApiExceptionHandler {
     }
 
     @ExceptionHandler(value = {UsernameInUseException.class})
-    public ResponseEntity<Object> handleUsernameInUseException(RuntimeException e, HttpServletRequest request) {
+    public ResponseEntity<Object> handleConflictException(RuntimeException e, HttpServletRequest request) {
         ApiExceptionBody apiExceptionBody = new ApiExceptionBody(
                 LocalDateTime.now(),
                 HttpStatus.CONFLICT.value(),

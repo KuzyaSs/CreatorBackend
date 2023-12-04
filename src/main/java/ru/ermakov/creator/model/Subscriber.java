@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 public record Subscriber(
         Long id,
         Subscription subscription,
-        User user,
+        String userId,
         LocalDateTime startDate,
         LocalDateTime endDate
 ) {
