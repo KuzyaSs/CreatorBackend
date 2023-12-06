@@ -7,7 +7,7 @@ import ru.ermakov.creator.service.CategoryService;
 import java.util.List;
 
 @RestController
-@RequestMapping("api")
+@RequestMapping(path = "api")
 public class CategoryController {
     private final CategoryService categoryService;
 

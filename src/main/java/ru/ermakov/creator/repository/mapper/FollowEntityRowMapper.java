@@ -6,7 +6,7 @@ import ru.ermakov.creator.model.FollowEntity;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static ru.ermakov.creator.repository.ColumnNameConstants.*;
+import static ru.ermakov.creator.repository.mapper.ParamNameConstants.*;
 
 public class FollowEntityRowMapper implements RowMapper<FollowEntity> {
     @Override

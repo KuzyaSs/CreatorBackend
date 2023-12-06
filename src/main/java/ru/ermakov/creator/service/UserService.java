@@ -6,7 +6,7 @@ import ru.ermakov.creator.model.User;
 import java.util.List;
 
 public interface UserService {
-    List<User> getUsersByPage(Integer limit, Integer offset);
+    List<User> getUsersByPage(String searchQuery, Integer limit, Integer offset);
 
     User getUserById(String userId);
 

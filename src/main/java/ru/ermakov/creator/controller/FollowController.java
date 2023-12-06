@@ -8,7 +8,7 @@ import ru.ermakov.creator.service.FollowService;
 import java.util.List;
 
 @RestController
-@RequestMapping("api")
+@RequestMapping(path = "api")
 public class FollowController {
     private final FollowService followService;
 
@@ -22,8 +22,8 @@ public class FollowController {
     }
 
     @GetMapping("follows")
-    Follow getFollowByUserAndCreatorIds(@RequestBody FollowRequest followRequest) {
-        return followService.getFollowByUserAndCreatorIds(followRequest);
+    Follow getFollowByUserAndCreatorIds(@RequestParam String userId, @RequestParam String creatorId) {
+        return followService.getFollowByUserAndCreatorIds(new FollowRequest(userId, creatorId));
     }
 
     @GetMapping("users/{userId}/followers/count")

@@ -9,7 +9,7 @@ import ru.ermakov.creator.repository.mapper.CategoryRowMapper;
 
 import java.util.List;
 
-import static ru.ermakov.creator.repository.ColumnNameConstants.*;
+import static ru.ermakov.creator.repository.mapper.ParamNameConstants.*;
 
 @Repository
 public class CategoryDaoImpl implements CategoryDao {

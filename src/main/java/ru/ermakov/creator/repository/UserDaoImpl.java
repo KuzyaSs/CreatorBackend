@@ -11,7 +11,7 @@ import ru.ermakov.creator.repository.mapper.UserRowMapper;
 import java.util.List;
 import java.util.Optional;
 
-import static ru.ermakov.creator.repository.ColumnNameConstants.*;
+import static ru.ermakov.creator.repository.mapper.ParamNameConstants.*;
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -22,16 +22,23 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> getUsersByPage(Integer limit, Integer offset) {
-        String query = String.format("""
+    public List<User> getUsersByPage(String searchQuery, Integer limit, Integer offset) {
+        String query = """
                 SELECT *
                 FROM public.user
+                WHERE LOWER(username) LIKE LOWER(:search_query)
                 ORDER BY registration_date
-                LIMIT %s
-                OFFSET %s
-                    """, limit, offset);
+                LIMIT :limit
+                OFFSET :offset
+                    """;
 
-        return jdbcTemplate.query(query, new UserRowMapper());
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
+                .addValue(SEARCH_QUERY_PARAM, "%" + searchQuery + "%")
+                .addValue(LIMIT_PARAM, limit)
+                .addValue(OFFSET_PARAM, offset);
+
+
+        return jdbcTemplate.query(query, sqlParameterSource, new UserRowMapper());
     }
 
     @Override

@@ -1,6 +1,6 @@
-package ru.ermakov.creator.repository;
+package ru.ermakov.creator.repository.mapper;
 
-public final class ColumnNameConstants {
+public final class ParamNameConstants {
     public static final String ID_COLUMN = "id";
     public static final String USERNAME_COLUMN = "username";
     public static final String EMAIL_COLUMN = "email";
@@ -15,4 +15,8 @@ public final class ColumnNameConstants {
     public static final String USER_ID_COLUMN = "user_id";
     public static final String CREATOR_ID_COLUMN = "creator_id";
     public static final String IS_SELECTED_COLUMN = "is_selected";
+
+    public static final String LIMIT_PARAM = "limit";
+    public static final String OFFSET_PARAM = "offset";
+    public static final String SEARCH_QUERY_PARAM = "search_query";
 }

@@ -13,10 +13,12 @@ import java.util.List;
 public class FollowServiceImpl implements FollowService {
     private final FollowDao followDao;
     private final UserService userService;
+    private final CreatorService creatorService;
 
-    public FollowServiceImpl(FollowDao followDao, UserService userService) {
+    public FollowServiceImpl(FollowDao followDao, UserService userService, CreatorService creatorService) {
         this.followDao = followDao;
         this.userService = userService;
+        this.creatorService = creatorService;
     }
 
     @Override
@@ -26,7 +28,7 @@ public class FollowServiceImpl implements FollowService {
                 .map(followEntity -> new Follow(
                                 followEntity.id(),
                                 userService.getUserById(followEntity.userId()),
-                                userService.getUserById(followEntity.creatorId()),
+                                creatorService.getCreatorByUserId(followEntity.creatorId()),
                                 followEntity.startDate()
                         )
                 ).toList();
@@ -39,7 +41,7 @@ public class FollowServiceImpl implements FollowService {
         return new Follow(
                 followEntity.id(),
                 userService.getUserById(followEntity.userId()),
-                userService.getUserById(followEntity.creatorId()),
+                creatorService.getCreatorByUserId(followEntity.creatorId()),
                 followEntity.startDate()
         );
     }

@@ -11,7 +11,7 @@ import ru.ermakov.creator.repository.mapper.FollowEntityRowMapper;
 import java.util.List;
 import java.util.Optional;
 
-import static ru.ermakov.creator.repository.ColumnNameConstants.*;
+import static ru.ermakov.creator.repository.mapper.ParamNameConstants.*;
 
 @Repository
 public class FollowDaoImpl implements FollowDao {

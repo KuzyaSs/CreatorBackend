@@ -6,7 +6,7 @@ import java.time.LocalDate;
 public record Follow(
         Long id,
         User user,
-        User creator,
+        Creator creator,
         LocalDate startDate
 ) {
 }
