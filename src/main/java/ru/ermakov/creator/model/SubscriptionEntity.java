@@ -1,9 +1,9 @@
 package ru.ermakov.creator.model;
 
 
-public record Subscription(
+public record SubscriptionEntity(
         Long id,
-        Creator creator,
+        String creatorId,
         String title,
         String description,
         Integer price

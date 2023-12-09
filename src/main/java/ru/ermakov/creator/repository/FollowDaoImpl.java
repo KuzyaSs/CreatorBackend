@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 import ru.ermakov.creator.model.FollowEntity;
 import ru.ermakov.creator.model.FollowRequest;
-import ru.ermakov.creator.repository.mapper.FollowEntityRowMapper;
+import ru.ermakov.creator.repository.mapper.FollowRowMapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,7 +32,7 @@ public class FollowDaoImpl implements FollowDao {
 
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource(USER_ID_COLUMN, userId);
 
-        return jdbcTemplate.query(query, sqlParameterSource, new FollowEntityRowMapper());
+        return jdbcTemplate.query(query, sqlParameterSource, new FollowRowMapper());
     }
 
     @Override
@@ -47,7 +47,7 @@ public class FollowDaoImpl implements FollowDao {
                 .addValue(USER_ID_COLUMN, followRequest.userId())
                 .addValue(CREATOR_ID_COLUMN, followRequest.creatorId());
 
-        return jdbcTemplate.query(query, sqlParameterSource, new FollowEntityRowMapper())
+        return jdbcTemplate.query(query, sqlParameterSource, new FollowRowMapper())
                 .stream()
                 .findFirst();
     }

@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @ControllerAdvice
 public class ApiExceptionHandler {
-    @ExceptionHandler(value = {UserNotFoundException.class, FollowNotFoundException.class})
+    @ExceptionHandler(value = {UserNotFoundException.class, FollowNotFoundException.class, SubscriptionNotFoundException.class})
     public ResponseEntity<Object> handleNotFoundException(RuntimeException e, HttpServletRequest request) {
         ApiExceptionBody apiExceptionBody = new ApiExceptionBody(
                 LocalDateTime.now(),

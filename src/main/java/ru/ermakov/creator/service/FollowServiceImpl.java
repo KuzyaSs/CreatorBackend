@@ -25,7 +25,8 @@ public class FollowServiceImpl implements FollowService {
     public List<Follow> getFollowsByUserId(String userId) {
         return followDao.getFollowsByUserId(userId)
                 .stream()
-                .map(followEntity -> new Follow(
+                .map(followEntity ->
+                        new Follow(
                                 followEntity.id(),
                                 userService.getUserById(followEntity.userId()),
                                 creatorService.getCreatorByUserId(followEntity.creatorId()),

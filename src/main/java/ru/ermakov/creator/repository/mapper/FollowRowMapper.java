@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 import static ru.ermakov.creator.repository.mapper.ParamNameConstants.*;
 
-public class FollowEntityRowMapper implements RowMapper<FollowEntity> {
+public class FollowRowMapper implements RowMapper<FollowEntity> {
     @Override
     public FollowEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
         return new FollowEntity(

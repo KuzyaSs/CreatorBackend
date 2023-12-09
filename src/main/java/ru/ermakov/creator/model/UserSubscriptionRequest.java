@@ -1,7 +1,7 @@
 package ru.ermakov.creator.model;
 
 
-public record SubscriberRequest(
+public record UserSubscriptionRequest(
         Long subscriptionId,
         String userId,
         Integer durationInMonths

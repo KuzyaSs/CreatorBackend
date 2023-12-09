@@ -24,7 +24,7 @@ public class CategoryDaoImpl implements CategoryDao {
         String query = """
                 SELECT id, name, FALSE AS is_selected
                 FROM category
-                """;
+                    """;
         return jdbcTemplate.query(query, new CategoryRowMapper());
     }
 
@@ -40,7 +40,7 @@ public class CategoryDaoImpl implements CategoryDao {
                         ELSE FALSE
                     END AS is_selected
                 FROM category
-                """;
+                    """;
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource(USER_ID_COLUMN, userId);
         return jdbcTemplate.query(query, sqlParameterSource, new CategoryRowMapper());
     }
@@ -52,7 +52,7 @@ public class CategoryDaoImpl implements CategoryDao {
                 VALUES (:user_id, :category_id, :is_selected)
                 ON CONFLICT (user_id, category_id) DO UPDATE
                 SET is_selected = excluded.is_selected
-                """;
+                    """;
 
         MapSqlParameterSource[] sqlParameterSources = categories.stream().map(category ->
                 new MapSqlParameterSource()

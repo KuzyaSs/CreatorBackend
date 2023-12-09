@@ -115,11 +115,11 @@ public class UserDaoImpl implements UserDao {
                      """;
 
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
-                .addValue(ID_COLUMN, user.getId())
-                .addValue(USERNAME_COLUMN, user.getUsername())
-                .addValue(BIO_COLUMN, user.getBio())
-                .addValue(PROFILE_AVATAR_URL_COLUMN, user.getProfileAvatarUrl())
-                .addValue(PROFILE_BACKGROUND_URL_COLUMN, user.getProfileBackgroundUrl());
+                .addValue(ID_COLUMN, user.id())
+                .addValue(USERNAME_COLUMN, user.username())
+                .addValue(BIO_COLUMN, user.bio())
+                .addValue(PROFILE_AVATAR_URL_COLUMN, user.profileAvatarUrl())
+                .addValue(PROFILE_BACKGROUND_URL_COLUMN, user.profileBackgroundUrl());
 
         jdbcTemplate.update(query, sqlParameterSource);
     }

@@ -35,10 +35,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUser(User user) {
-        if (!userDao.userExistsById(user.getId())) {
+        if (!userDao.userExistsById(user.id())) {
             throw new UserNotFoundException();
         }
-        if (!userDao.checkUsernameUniqueness(user.getUsername(), user.getId())) {
+        if (!userDao.checkUsernameUniqueness(user.username(), user.id())) {
             throw new UsernameInUseException();
         }
         userDao.updateUser(user);

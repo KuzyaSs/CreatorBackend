@@ -15,6 +15,9 @@ public final class ParamNameConstants {
     public static final String USER_ID_COLUMN = "user_id";
     public static final String CREATOR_ID_COLUMN = "creator_id";
     public static final String IS_SELECTED_COLUMN = "is_selected";
+    public static final String TITLE_COLUMN = "title";
+    public static final String DESCRIPTION_COLUMN = "description";
+    public static final String PRICE_COLUMN = "price";
 
     public static final String LIMIT_PARAM = "limit";
     public static final String OFFSET_PARAM = "offset";

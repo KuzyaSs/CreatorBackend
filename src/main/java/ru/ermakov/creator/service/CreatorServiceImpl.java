@@ -28,7 +28,7 @@ public class CreatorServiceImpl implements CreatorService {
         return userService.getUsersByPage(searchQuery, limit, offset)
                 .stream()
                 .map(user ->
-                        getCreatorByUserId(user.getId())
+                        getCreatorByUserId(user.id())
                 ).toList();
     }
 
