@@ -21,7 +21,7 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(apiExceptionBody, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(value = {UsernameInUseException.class})
+    @ExceptionHandler(value = {DuplicateUsernameException.class, DuplicateSubscriptionTitleException.class, DuplicateUserSubscriptionException.class})
     public ResponseEntity<Object> handleConflictException(RuntimeException e, HttpServletRequest request) {
         ApiExceptionBody apiExceptionBody = new ApiExceptionBody(
                 LocalDateTime.now(),

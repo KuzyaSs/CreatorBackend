@@ -1,11 +1,14 @@
 package ru.ermakov.creator.service;
 
+import org.springframework.stereotype.Service;
 import ru.ermakov.creator.exception.SubscriptionNotFoundException;
+import ru.ermakov.creator.exception.DuplicateSubscriptionTitleException;
 import ru.ermakov.creator.model.*;
 import ru.ermakov.creator.repository.SubscriptionDao;
 
 import java.util.List;
 
+@Service
 public class SubscriptionServiceImpl implements SubscriptionService {
     private final SubscriptionDao subscriptionDao;
     private final CreatorService creatorService;
@@ -45,13 +48,18 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public void insertSubscription(SubscriptionRequest subscriptionRequest) {
+        if (subscriptionDao.subscriptionExistsByTitle(null, subscriptionRequest)) {
+            throw new DuplicateSubscriptionTitleException();
+        }
         subscriptionDao.insertSubscription(subscriptionRequest);
     }
 
     @Override
-    public void updateSubscription(Subscription subscription) {
-        subscriptionDao.updateSubscription(subscription);
-
+    public void updateSubscription(Long subscriptionId, SubscriptionRequest subscriptionRequest) {
+        if (subscriptionDao.subscriptionExistsByTitle(subscriptionId, subscriptionRequest)) {
+            throw new DuplicateSubscriptionTitleException();
+        }
+        subscriptionDao.updateSubscription(subscriptionId, subscriptionRequest);
     }
 
     @Override

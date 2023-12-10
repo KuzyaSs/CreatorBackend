@@ -2,7 +2,6 @@ package ru.ermakov.creator.controller;
 
 import org.springframework.web.bind.annotation.*;
 import ru.ermakov.creator.model.Subscription;
-import ru.ermakov.creator.model.SubscriptionEntity;
 import ru.ermakov.creator.model.SubscriptionRequest;
 import ru.ermakov.creator.service.SubscriptionService;
 
@@ -18,7 +17,7 @@ public class SubscriptionController {
     }
 
     @GetMapping("creators/{creatorId}/subscriptions")
-    List<Subscription> getSubscriptionsByCreatorId(@RequestParam String creatorId) {
+    List<Subscription> getSubscriptionsByCreatorId(@PathVariable String creatorId) {
         return subscriptionService.getSubscriptionsByCreatorId(creatorId);
     }
 
@@ -33,8 +32,8 @@ public class SubscriptionController {
     }
 
     @PutMapping("subscriptions/{subscriptionId}")
-    void updateSubscription(@RequestBody Subscription subscription) {
-        subscriptionService.updateSubscription(subscription);
+    void updateSubscription(@PathVariable Long subscriptionId, @RequestBody SubscriptionRequest subscriptionRequest) {
+        subscriptionService.updateSubscription(subscriptionId, subscriptionRequest);
     }
 
     @DeleteMapping("subscriptions/{subscriptionId}")

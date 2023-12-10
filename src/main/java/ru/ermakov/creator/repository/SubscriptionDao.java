@@ -1,6 +1,5 @@
 package ru.ermakov.creator.repository;
 
-import ru.ermakov.creator.model.Subscription;
 import ru.ermakov.creator.model.SubscriptionEntity;
 import ru.ermakov.creator.model.SubscriptionRequest;
 
@@ -13,7 +12,9 @@ public interface SubscriptionDao {
 
     void insertSubscription(SubscriptionRequest subscriptionRequest);
 
-    void updateSubscription(Subscription subscription);
+    void updateSubscription(Long subscriptionId, SubscriptionRequest subscriptionRequest);
 
     void deleteSubscriptionById(Long subscriptionId);
+
+    Boolean subscriptionExistsByTitle(Long subscriptionId, SubscriptionRequest subscriptionRequest);
 }

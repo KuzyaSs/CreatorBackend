@@ -72,18 +72,19 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public Boolean checkUsernameUniqueness(String username, String currentUserId) {
+    public Boolean userExistsByUsername(String username, String userId) {
         String query = """
-                SELECT NOT EXISTS(
+                SELECT EXISTS(
                     SELECT 1
                     FROM public.user
-                    WHERE username = :username AND id != :id
+                    WHERE username = :username
+                        AND id != :id
                 )
                     """;
 
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
                 .addValue(USERNAME_COLUMN, username)
-                .addValue(ID_COLUMN, currentUserId);
+                .addValue(ID_COLUMN, userId);
 
         return jdbcTemplate.queryForObject(query, sqlParameterSource, Boolean.class);
     }

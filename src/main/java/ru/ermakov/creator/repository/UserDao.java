@@ -13,7 +13,7 @@ public interface UserDao {
 
     Boolean userExistsById(String userId);
 
-    Boolean checkUsernameUniqueness(String username, String currentUserId);
+    Boolean userExistsByUsername(String username, String userId);
 
     void insertUser(AuthUser authUser);
 

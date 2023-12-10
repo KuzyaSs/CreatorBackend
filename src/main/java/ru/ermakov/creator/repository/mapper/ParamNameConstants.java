@@ -10,11 +10,13 @@ public final class ParamNameConstants {
     public static final String IS_MODERATOR_COLUMN = "is_moderator";
     public static final String REGISTRATION_DATE_COLUMN = "registration_date";
     public static final String START_DATE_COLUMN = "start_date";
+    public static final String END_DATE_COLUMN = "end_date";
     public static final String CATEGORY_ID_COLUMN = "category_id";
     public static final String NAME_COLUMN = "name";
     public static final String USER_ID_COLUMN = "user_id";
     public static final String CREATOR_ID_COLUMN = "creator_id";
     public static final String IS_SELECTED_COLUMN = "is_selected";
+    public static final String SUBSCRIPTION_ID_COLUMN = "subscription_id";
     public static final String TITLE_COLUMN = "title";
     public static final String DESCRIPTION_COLUMN = "description";
     public static final String PRICE_COLUMN = "price";

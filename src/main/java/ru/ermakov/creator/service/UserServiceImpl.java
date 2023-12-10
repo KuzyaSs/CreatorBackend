@@ -2,7 +2,7 @@ package ru.ermakov.creator.service;
 
 import org.springframework.stereotype.Service;
 import ru.ermakov.creator.exception.UserNotFoundException;
-import ru.ermakov.creator.exception.UsernameInUseException;
+import ru.ermakov.creator.exception.DuplicateUsernameException;
 import ru.ermakov.creator.model.AuthUser;
 import ru.ermakov.creator.model.User;
 import ru.ermakov.creator.repository.UserDao;
@@ -38,8 +38,8 @@ public class UserServiceImpl implements UserService {
         if (!userDao.userExistsById(user.id())) {
             throw new UserNotFoundException();
         }
-        if (!userDao.checkUsernameUniqueness(user.username(), user.id())) {
-            throw new UsernameInUseException();
+        if (userDao.userExistsByUsername(user.username(), user.id())) {
+            throw new DuplicateUsernameException();
         }
         userDao.updateUser(user);
     }
