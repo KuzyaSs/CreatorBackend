@@ -1,12 +1,12 @@
 package ru.ermakov.creator.model;
 
 
-import java.time.LocalDate;
+import java.sql.Timestamp;
 
 public record FollowEntity(
         Long id,
         String userId,
         String creatorId,
-        LocalDate startDate
+        Timestamp startDate
 ) {
 }

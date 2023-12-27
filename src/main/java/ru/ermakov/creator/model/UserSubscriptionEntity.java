@@ -1,13 +1,13 @@
 package ru.ermakov.creator.model;
 
 
-import java.time.LocalDate;
+import java.sql.Timestamp;
 
 public record UserSubscriptionEntity(
         Long id,
         Long subscriptionId,
         String userId,
-        LocalDate startDate,
-        LocalDate endDate
+        Timestamp startDate,
+        Timestamp endDate
 ) {
 }

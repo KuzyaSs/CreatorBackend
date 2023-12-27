@@ -46,8 +46,12 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
 
     @Override
     public void insertUserSubscription(UserSubscriptionRequest userSubscriptionRequest) {
+        // Checking that a user exists.
+        userService.getUserById(userSubscriptionRequest.userId());
+        // Check that a subscription exists.
+        subscriptionService.getSubscriptionById(userSubscriptionRequest.subscriptionId());
         // Check that user doesn't have a subscription of this author.
-        if (userSubscriptionDao.checkUserSubscriptionExistenceByUserAndSubscriptionIds(userSubscriptionRequest.userId(), userSubscriptionRequest.subscriptionId())) {
+        if (userSubscriptionDao.userSubscriptionExistsByUserAndSubscriptionIds(userSubscriptionRequest.userId(), userSubscriptionRequest.subscriptionId())) {
             throw new DuplicateUserSubscriptionException();
         }
         // Subtract credits (check user's account for enough credits).

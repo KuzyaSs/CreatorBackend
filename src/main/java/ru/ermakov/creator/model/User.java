@@ -1,6 +1,6 @@
 package ru.ermakov.creator.model;
 
-import java.time.LocalDate;
+import java.sql.Timestamp;
 
 public record User(
         String id,
@@ -10,7 +10,7 @@ public record User(
         String profileAvatarUrl,
         String profileBackgroundUrl,
         Boolean isModerator,
-        LocalDate registrationDate
+        Timestamp registrationDate
 ) {
 
 }

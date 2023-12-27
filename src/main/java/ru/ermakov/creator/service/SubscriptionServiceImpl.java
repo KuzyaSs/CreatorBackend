@@ -48,7 +48,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public void insertSubscription(SubscriptionRequest subscriptionRequest) {
-        if (subscriptionDao.subscriptionExistsByTitle(null, subscriptionRequest)) {
+        if (subscriptionDao.subscriptionExistsByTitle(-1L, subscriptionRequest)) {
             throw new DuplicateSubscriptionTitleException();
         }
         subscriptionDao.insertSubscription(subscriptionRequest);

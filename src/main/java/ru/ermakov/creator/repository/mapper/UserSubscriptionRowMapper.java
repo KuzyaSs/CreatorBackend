@@ -15,8 +15,8 @@ public class UserSubscriptionRowMapper implements RowMapper<UserSubscriptionEnti
                 rs.getLong(ID_COLUMN),
                 rs.getLong(SUBSCRIPTION_ID_COLUMN),
                 rs.getString(USER_ID_COLUMN),
-                rs.getTimestamp(START_DATE_COLUMN).toLocalDateTime().toLocalDate(),
-                rs.getTimestamp(END_DATE_COLUMN).toLocalDateTime().toLocalDate()
+                rs.getTimestamp(START_DATE_COLUMN),
+                rs.getTimestamp(END_DATE_COLUMN)
         );
     }
 }

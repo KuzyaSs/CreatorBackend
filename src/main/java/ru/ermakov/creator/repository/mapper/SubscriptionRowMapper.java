@@ -16,7 +16,7 @@ public class SubscriptionRowMapper implements RowMapper<SubscriptionEntity> {
                 rs.getString(CREATOR_ID_COLUMN),
                 rs.getString(TITLE_COLUMN),
                 rs.getString(DESCRIPTION_COLUMN),
-                rs.getInt(PRICE_COLUMN)
+                rs.getLong(PRICE_COLUMN)
         );
     }
 }

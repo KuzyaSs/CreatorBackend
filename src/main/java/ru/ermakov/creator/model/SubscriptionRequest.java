@@ -5,6 +5,6 @@ public record SubscriptionRequest(
         String creatorId,
         String title,
         String description,
-        Integer price
+        Long price
 ) {
 }

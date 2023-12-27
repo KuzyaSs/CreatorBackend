@@ -15,7 +15,7 @@ public class FollowRowMapper implements RowMapper<FollowEntity> {
                 rs.getLong(ID_COLUMN),
                 rs.getString(USER_ID_COLUMN),
                 rs.getString(CREATOR_ID_COLUMN),
-                rs.getTimestamp(START_DATE_COLUMN).toLocalDateTime().toLocalDate()
+                rs.getTimestamp(START_DATE_COLUMN)
         );
     }
 }

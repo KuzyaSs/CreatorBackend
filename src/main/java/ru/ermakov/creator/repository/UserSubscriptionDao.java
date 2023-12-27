@@ -14,5 +14,5 @@ public interface UserSubscriptionDao {
 
     void deleteUserSubscriptionById(Long userSubscriptionId);
 
-    Boolean checkUserSubscriptionExistenceByUserAndSubscriptionIds(String userId, Long subscriptionId);
+    Boolean userSubscriptionExistsByUserAndSubscriptionIds(String userId, Long subscriptionId);
 }

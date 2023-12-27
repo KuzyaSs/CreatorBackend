@@ -6,6 +6,6 @@ public record Subscription(
         Creator creator,
         String title,
         String description,
-        Integer price
+        Long price
 ) {
 }

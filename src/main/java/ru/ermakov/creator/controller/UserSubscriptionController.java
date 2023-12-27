@@ -31,8 +31,8 @@ public class UserSubscriptionController {
         userSubscriptionService.insertUserSubscription(userSubscriptionRequest);
     }
 
-    @DeleteMapping("users/{userId}/subscriptions/{subscriptionId}")
-    void deleteUserSubscriptionById(@PathVariable Long subscriptionId) {
-        userSubscriptionService.deleteUserSubscriptionById(subscriptionId);
+    @DeleteMapping("users/{userId}/subscriptions/{userSubscriptionId}")
+    void deleteUserSubscriptionById(@PathVariable Long userSubscriptionId) {
+        userSubscriptionService.deleteUserSubscriptionById(userSubscriptionId);
     }
 }

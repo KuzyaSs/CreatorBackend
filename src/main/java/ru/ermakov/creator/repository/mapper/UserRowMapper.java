@@ -19,7 +19,7 @@ public class UserRowMapper implements RowMapper<User> {
                 rs.getString(PROFILE_AVATAR_URL_COLUMN),
                 rs.getString(PROFILE_BACKGROUND_URL_COLUMN),
                 rs.getBoolean(IS_MODERATOR_COLUMN),
-                rs.getTimestamp(REGISTRATION_DATE_COLUMN).toLocalDateTime().toLocalDate()
+                rs.getTimestamp(REGISTRATION_DATE_COLUMN)
         );
     }
 }

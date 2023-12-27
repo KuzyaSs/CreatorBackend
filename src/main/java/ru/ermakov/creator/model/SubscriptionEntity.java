@@ -6,6 +6,6 @@ public record SubscriptionEntity(
         String creatorId,
         String title,
         String description,
-        Integer price
+        Long price
 ) {
 }

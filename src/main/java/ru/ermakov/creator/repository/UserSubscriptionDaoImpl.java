@@ -85,7 +85,7 @@ public class UserSubscriptionDaoImpl implements UserSubscriptionDao {
     }
 
     @Override
-    public Boolean checkUserSubscriptionExistenceByUserAndSubscriptionIds(String userId, Long subscriptionId) {
+    public Boolean userSubscriptionExistsByUserAndSubscriptionIds(String userId, Long subscriptionId) {
         String query = """
                 SELECT EXISTS(
                     SELECT 1

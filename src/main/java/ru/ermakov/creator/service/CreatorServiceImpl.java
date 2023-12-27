@@ -2,7 +2,6 @@ package ru.ermakov.creator.service;
 
 import org.springframework.stereotype.Service;
 import ru.ermakov.creator.model.Creator;
-import ru.ermakov.creator.model.User;
 import ru.ermakov.creator.repository.CategoryDao;
 import ru.ermakov.creator.repository.FollowDao;
 
