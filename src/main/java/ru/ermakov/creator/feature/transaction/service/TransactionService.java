@@ -8,9 +8,17 @@ import ru.ermakov.creator.feature.transaction.model.UserTransactionRequest;
 import java.util.List;
 
 public interface TransactionService {
-    List<UserTransaction> getUserTransactionsByPage(Long userTransactionId, Integer limit);
+    List<UserTransaction> getUserTransactionsByPage(String userId, Integer limit, Integer offset);
 
-    List<CreditGoalTransaction> getCreditGoalTransactionsByPage(Long creditGoalTransactionId, Integer limit);
+    List<CreditGoalTransaction> getCreditGoalTransactionsByCreditGoalIdByPage(
+            Long creditGoalId,
+            Integer limit,
+            Integer offset
+    );
+
+    Long getBalanceByUserId(String userId);
+
+    Long getBalanceByCreditGoalId(Long creditGoalId);
 
     void insertUserTransaction(UserTransactionRequest userTransactionRequest);
 

@@ -1,7 +1,9 @@
 package ru.ermakov.creator.feature.transaction.service;
 
 import org.springframework.stereotype.Service;
-import ru.ermakov.creator.feature.transaction.exception.InsufficientFundsException;
+import ru.ermakov.creator.feature.goal.service.GoalService;
+import ru.ermakov.creator.feature.transaction.exception.InsufficientFundsInAccountException;
+import ru.ermakov.creator.feature.transaction.exception.InsufficientFundsInGoalException;
 import ru.ermakov.creator.feature.transaction.exception.TransactionNotFoundException;
 import ru.ermakov.creator.feature.transaction.model.CreditGoalTransaction;
 import ru.ermakov.creator.feature.transaction.model.CreditGoalTransactionRequest;
@@ -16,19 +18,23 @@ import java.util.List;
 public class TransactionServiceImpl implements TransactionService {
     private final TransactionDao transactionDao;
     private final UserService userService;
-    private final CreditGoalService creditGoalService;
+    private final GoalService goalService;
 
+    private static final Long WITHDRAW_TRANSACTION_ID = 2L;
     private static final Long CLOSE_CREDIT_GOAL_TRANSACTION_ID = 3L;
+    private static final Long BUY_SUBSCRIPTION_TRANSACTION_ID = 4L;
+    private static final Long TRANSFER_TO_USER_TRANSACTION_ID = 5L;
+    private static final Long TRANSFER_TO_CREDIT_GOAL_TRANSACTION_ID = 6L;
 
-    public TransactionServiceImpl(TransactionDao transactionDao, UserService userService, CreditGoalService creditGoalService) {
+    public TransactionServiceImpl(TransactionDao transactionDao, UserService userService, GoalService goalService) {
         this.transactionDao = transactionDao;
         this.userService = userService;
-        this.creditGoalService = creditGoalService;
+        this.goalService = goalService;
     }
 
     @Override
-    public List<UserTransaction> getUserTransactionsByPage(Long userTransactionId, Integer limit) {
-        return transactionDao.getUserTransactionsByPage(userTransactionId, limit)
+    public List<UserTransaction> getUserTransactionsByPage(String userId, Integer limit, Integer offset) {
+        return transactionDao.getUserTransactionsByPage(userId, limit, offset)
                 .stream()
                 .map(userTransactionEntity ->
                         new UserTransaction(
@@ -45,13 +51,17 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<CreditGoalTransaction> getCreditGoalTransactionsByPage(Long creditGoalTransactionId, Integer limit) {
-        return transactionDao.getCreditGoalTransactionsByPage(creditGoalTransactionId, limit)
+    public List<CreditGoalTransaction> getCreditGoalTransactionsByCreditGoalIdByPage(
+            Long creditGoalId,
+            Integer limit,
+            Integer offset
+    ) {
+        return transactionDao.getCreditGoalTransactionsByCreditGoalIdByPage(creditGoalId, limit, offset)
                 .stream()
                 .map(creditGoalTransactionEntity ->
                         new CreditGoalTransaction(
                                 creditGoalTransactionEntity.id(),
-                                creditGoalService.getCreditGoalById(creditGoalTransactionEntity.creditGoalId()),
+                                goalService.getCreditGoalById(creditGoalTransactionEntity.creditGoalId()),
                                 userService.getUserById(creditGoalTransactionEntity.userId()),
                                 transactionDao.getTransactionTypeById(creditGoalTransactionEntity.transactionTypeId())
                                         .orElseThrow(TransactionNotFoundException::new),
@@ -63,20 +73,51 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    public Long getBalanceByUserId(String userId) {
+        return transactionDao.getBalanceByUserId(userId);
+    }
+
+    @Override
+    public Long getBalanceByCreditGoalId(Long creditGoalId) {
+        return transactionDao.getBalanceByCreditGoalId(creditGoalId);
+    }
+
+    @Override
     public void insertUserTransaction(UserTransactionRequest userTransactionRequest) {
-        if (transactionDao.getBalanceByUserId(userTransactionRequest.senderUserId()) < userTransactionRequest.amount()) {
-            throw new InsufficientFundsException();
+        if ((userTransactionRequest.transactionTypeId().equals(WITHDRAW_TRANSACTION_ID) ||
+             userTransactionRequest.transactionTypeId().equals(BUY_SUBSCRIPTION_TRANSACTION_ID) ||
+             userTransactionRequest.transactionTypeId().equals(TRANSFER_TO_USER_TRANSACTION_ID)) &&
+            getBalanceByUserId(userTransactionRequest.senderUserId()) < userTransactionRequest.amount()
+        ) {
+            throw new InsufficientFundsInAccountException();
         }
+
         transactionDao.insertUserTransaction(userTransactionRequest);
     }
 
     @Override
     public void insertCreditGoalTransaction(CreditGoalTransactionRequest creditGoalTransactionRequest) {
-        if (!creditGoalTransactionRequest.transactionTypeId().equals(CLOSE_CREDIT_GOAL_TRANSACTION_ID) &&
-            transactionDao.getBalanceByUserId(creditGoalTransactionRequest.userId()) < creditGoalTransactionRequest.amount()
+        if (creditGoalTransactionRequest.transactionTypeId().equals(TRANSFER_TO_CREDIT_GOAL_TRANSACTION_ID) &&
+            getBalanceByUserId(creditGoalTransactionRequest.senderUserId()) < creditGoalTransactionRequest.amount()
         ) {
-            throw new InsufficientFundsException();
+            throw new InsufficientFundsInAccountException();
         }
+
+        if (creditGoalTransactionRequest.transactionTypeId().equals(CLOSE_CREDIT_GOAL_TRANSACTION_ID) &&
+            getBalanceByCreditGoalId(creditGoalTransactionRequest.creditGoalId()) < creditGoalTransactionRequest.amount()
+        ) {
+            throw new InsufficientFundsInGoalException();
+        }
+
+        UserTransactionRequest userTransactionRequest = new UserTransactionRequest(
+                creditGoalTransactionRequest.senderUserId(),
+                creditGoalTransactionRequest.receiverUserId(),
+                creditGoalTransactionRequest.transactionTypeId(),
+                creditGoalTransactionRequest.amount(),
+                creditGoalTransactionRequest.message()
+        );
+        insertUserTransaction(userTransactionRequest);
+
         transactionDao.insertCreditGoalTransaction(creditGoalTransactionRequest);
     }
 }

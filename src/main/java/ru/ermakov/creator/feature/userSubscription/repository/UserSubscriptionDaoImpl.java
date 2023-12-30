@@ -57,6 +57,21 @@ public class UserSubscriptionDaoImpl implements UserSubscriptionDao {
     }
 
     @Override
+    public Long getSubscriberCountByCreatorId(String creatorId) {
+        String query = """
+                SELECT COUNT(*)
+                FROM user_subscription
+                JOIN public.subscription ON user_subscription.subscription_id = public.subscription.id
+                WHERE creator_id = :creator_id
+                    AND NOW() BETWEEN start_date AND end_date
+                    """;
+
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource(CREATOR_ID_COLUMN, creatorId);
+
+        return jdbcTemplate.queryForObject(query, sqlParameterSource, Long.class);
+    }
+
+    @Override
     public void insertUserSubscription(UserSubscriptionRequest userSubscriptionRequest) {
         String query = """
                 INSERT INTO user_subscription (subscription_id, user_id, end_date)

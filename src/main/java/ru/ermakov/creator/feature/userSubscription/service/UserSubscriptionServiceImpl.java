@@ -47,6 +47,11 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
     }
 
     @Override
+    public Long getSubscriberCountByCreatorId(String creatorId) {
+        return userSubscriptionDao.getSubscriberCountByCreatorId(creatorId);
+    }
+
+    @Override
     public void insertUserSubscription(UserSubscriptionRequest userSubscriptionRequest) {
         // Checking that a user exists.
         userService.getUserById(userSubscriptionRequest.userId());

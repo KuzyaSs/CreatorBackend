@@ -10,6 +10,8 @@ public interface UserSubscriptionDao {
 
     Long getSubscriberCountBySubscriptionId(Long subscriptionId);
 
+    Long getSubscriberCountByCreatorId(String creatorId);
+
     void insertUserSubscription(UserSubscriptionRequest userSubscriptionRequest);
 
     void deleteUserSubscriptionById(Long userSubscriptionId);

@@ -4,7 +4,8 @@ import java.sql.Timestamp;
 
 public record CreditGoalTransactionRequest(
         Long creditGoalId,
-        String userId,
+        String senderUserId,
+        String receiverUserId,
         Long transactionTypeId,
         Long amount,
         String message

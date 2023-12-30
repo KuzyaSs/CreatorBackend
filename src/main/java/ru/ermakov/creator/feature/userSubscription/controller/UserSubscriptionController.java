@@ -26,6 +26,11 @@ public class UserSubscriptionController {
         return userSubscriptionService.getSubscriberCountBySubscriptionId(subscriptionId);
     }
 
+    @GetMapping("creators/{creatorId}/subscribers/count")
+    Long getSubscriberCountByCreatorId(@PathVariable String creatorId) {
+        return userSubscriptionService.getSubscriberCountByCreatorId(creatorId);
+    }
+
     @PostMapping("users/{userId}/subscriptions")
     void insertUserSubscription(@RequestBody UserSubscriptionRequest userSubscriptionRequest) {
         userSubscriptionService.insertUserSubscription(userSubscriptionRequest);

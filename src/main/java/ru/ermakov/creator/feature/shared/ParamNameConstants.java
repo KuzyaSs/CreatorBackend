@@ -14,6 +14,8 @@ public final class ParamNameConstants {
     public static final String CATEGORY_ID_COLUMN = "category_id";
     public static final String NAME_COLUMN = "name";
     public static final String USER_ID_COLUMN = "user_id";
+    public static final String SENDER_USER_ID_COLUMN = "sender_user_id";
+    public static final String RECEIVER_USER_ID_COLUMN = "receiver_user_id";
     public static final String CREATOR_ID_COLUMN = "creator_id";
     public static final String IS_SELECTED_COLUMN = "is_selected";
     public static final String SUBSCRIPTION_ID_COLUMN = "subscription_id";
@@ -21,6 +23,14 @@ public final class ParamNameConstants {
     public static final String DESCRIPTION_COLUMN = "description";
     public static final String PRICE_COLUMN = "price";
     public static final String BALANCE_COLUMN = "balance";
+    public static final String TARGET_BALANCE_COLUMN = "target_balance";
+    public static final String CREATION_DATE_COLUMN = "creation_date";
+    public static final String AMOUNT_COLUMN = "amount";
+    public static final String MESSAGE_COLUMN = "message";
+    public static final String TRANSACTION_TYPE_ID_COLUMN = "transaction_type_id";
+    public static final String TRANSACTION_DATE_COLUMN = "transaction_date";
+    public static final String CREDIT_GOAL_ID_COLUMN = "credit_goal_id";
+
 
     public static final String LIMIT_PARAM = "limit";
     public static final String OFFSET_PARAM = "offset";

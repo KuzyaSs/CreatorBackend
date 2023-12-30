@@ -5,6 +5,8 @@ import ru.ermakov.creator.feature.category.service.CategoryService;
 import ru.ermakov.creator.feature.creator.model.Creator;
 import ru.ermakov.creator.feature.follow.repository.FollowDao;
 import ru.ermakov.creator.feature.user.service.UserService;
+import ru.ermakov.creator.feature.userSubscription.repository.UserSubscriptionDao;
+import ru.ermakov.creator.feature.userSubscription.service.UserSubscriptionService;
 
 import java.util.List;
 
@@ -13,14 +15,14 @@ public class CreatorServiceImpl implements CreatorService {
     private final UserService userService;
     private final CategoryService categoryService;
     private final FollowDao followDao;
-
-    // private final SubscriptionService subscriptionService;
+    private final UserSubscriptionDao userSubscriptionDao;
     // private final PostService postService;
 
-    public CreatorServiceImpl(UserService userService, CategoryService categoryService, FollowDao followDao) {
+    public CreatorServiceImpl(UserService userService, CategoryService categoryService, FollowDao followDao, UserSubscriptionDao userSubscriptionDao) {
         this.userService = userService;
         this.categoryService = categoryService;
         this.followDao = followDao;
+        this.userSubscriptionDao = userSubscriptionDao;
     }
 
     @Override
@@ -38,7 +40,7 @@ public class CreatorServiceImpl implements CreatorService {
                 userService.getUserById(userId),
                 categoryService.getCategoriesByUserId(userId),
                 followDao.getFollowerCountByUserId(userId),
-                0L, // subscriptionService.getSubscriptionCountByUserId(userId)
+                userSubscriptionDao.getSubscriberCountByCreatorId(userId),
                 0L // postService.getPostCountByUserId(userId)
         );
     }

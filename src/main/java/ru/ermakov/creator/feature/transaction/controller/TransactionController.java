@@ -20,18 +20,30 @@ public class TransactionController {
 
     @GetMapping("user-transactions")
     public List<UserTransaction> getUserTransactionsByPage(
-            @RequestParam Long userTransactionId,
-            @RequestParam Integer limit
+            @RequestParam String userId,
+            @RequestParam Integer limit,
+            @RequestParam Integer offset
     ) {
-        return transactionService.getUserTransactionsByPage(userTransactionId, limit);
+        return transactionService.getUserTransactionsByPage(userId, limit, offset);
     }
 
     @GetMapping("credit-goal-transactions")
     public List<CreditGoalTransaction> getCreditGoalTransactionsByPage(
-            @RequestParam Long creditGoalTransactionId,
-            @RequestParam Integer limit
+            @RequestParam Long creditGoalId,
+            @RequestParam Integer limit,
+            @RequestParam Integer offset
     ) {
-        return transactionService.getCreditGoalTransactionsByPage(creditGoalTransactionId, limit);
+        return transactionService.getCreditGoalTransactionsByCreditGoalIdByPage(creditGoalId, limit, offset);
+    }
+
+    @GetMapping("users/{userId}/balance")
+    public Long getBalanceByUserId(@PathVariable("userId") String userId) {
+        return transactionService.getBalanceByUserId(userId);
+    }
+
+    @GetMapping("credit-goals/{creditGoalId}/balance")
+    public Long getBalanceByCreditGoalId(@PathVariable("creditGoalId") Long creditGoalId) {
+        return transactionService.getBalanceByCreditGoalId(creditGoalId);
     }
 
     @PostMapping("user-transactions")

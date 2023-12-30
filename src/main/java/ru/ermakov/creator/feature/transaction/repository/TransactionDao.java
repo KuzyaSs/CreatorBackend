@@ -6,15 +6,19 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TransactionDao {
-    List<UserTransactionEntity> getUserTransactionsByPage(Long userTransactionId, Integer limit);
+    List<UserTransactionEntity> getUserTransactionsByPage(String userId, Integer limit, Integer offset);
 
-    List<CreditGoalTransactionEntity> getCreditGoalTransactionsByPage(Long creditGoalTransactionId, Integer limit);
+    List<CreditGoalTransactionEntity> getCreditGoalTransactionsByCreditGoalIdByPage(
+            Long creditGoalId,
+            Integer limit,
+            Integer offset
+    );
 
     Long getBalanceByUserId(String userId);
 
     Long getBalanceByCreditGoalId(Long creditGoalId);
 
-    Optional<TransactionType> getTransactionTypeById(Long transactionTypeById);
+    Optional<TransactionType> getTransactionTypeById(Long transactionTypeId);
 
     void insertUserTransaction(UserTransactionRequest userTransactionRequest);
 

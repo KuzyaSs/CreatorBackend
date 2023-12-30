@@ -26,13 +26,13 @@ public class UserController {
         return userService.getUserById(userId);
     }
 
-    @PostMapping
-    public void insertUser(@RequestBody AuthUser authUser) {
-        userService.insertUser(authUser);
-    }
-
     @PutMapping
     public void updateUser(@RequestBody User user) {
         userService.updateUser(user);
+    }
+
+    @PostMapping
+    public void insertUser(@RequestBody AuthUser authUser) {
+        userService.insertUser(authUser);
     }
 }
