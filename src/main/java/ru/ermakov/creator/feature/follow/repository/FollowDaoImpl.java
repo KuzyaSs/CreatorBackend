@@ -23,14 +23,30 @@ public class FollowDaoImpl implements FollowDao {
 
 
     @Override
-    public List<FollowEntity> getFollowsByUserId(String userId) {
+    public List<FollowEntity> getFollowPageBySearchQueryAndUserId(
+            String searchQuery,
+            Integer limit,
+            Integer offset,
+            String userId
+    ) {
         String query = """
-                SELECT *
+                SELECT follow.id, user_id, creator_id, start_date,
+                    creator.username, creator.registration_date
                 FROM follow
+                JOIN public.user ON user_id = public.user.id
+                JOIN public.user AS creator ON creator_id = creator.id
                 WHERE user_id = :user_id
+                    AND LOWER(creator.username) LIKE LOWER(:search_query)
+                ORDER BY creator.username
+                LIMIT :limit
+                OFFSET :offset
                     """;
 
-        SqlParameterSource sqlParameterSource = new MapSqlParameterSource(USER_ID_COLUMN, userId);
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
+                .addValue(SEARCH_QUERY_PARAM, "%" + searchQuery + "%")
+                .addValue(LIMIT_PARAM, limit)
+                .addValue(OFFSET_PARAM, offset)
+                .addValue(USER_ID_COLUMN, userId);
 
         return jdbcTemplate.query(query, sqlParameterSource, new FollowRowMapper());
     }

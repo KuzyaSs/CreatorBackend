@@ -33,8 +33,8 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<UserTransaction> getUserTransactionsByPage(String userId, Integer limit, Integer offset) {
-        return transactionDao.getUserTransactionsByPage(userId, limit, offset)
+    public List<UserTransaction> getUserTransactionPageByUserId(String userId, Integer limit, Integer offset) {
+        return transactionDao.getUserTransactionPageByUserId(userId, limit, offset)
                 .stream()
                 .map(userTransactionEntity ->
                         new UserTransaction(
@@ -51,12 +51,12 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<CreditGoalTransaction> getCreditGoalTransactionsByCreditGoalIdByPage(
+    public List<CreditGoalTransaction> getCreditGoalTransactionPageByCreditGoalId(
             Long creditGoalId,
             Integer limit,
             Integer offset
     ) {
-        return transactionDao.getCreditGoalTransactionsByCreditGoalIdByPage(creditGoalId, limit, offset)
+        return transactionDao.getCreditGoalTransactionPageByCreditGoalId(creditGoalId, limit, offset)
                 .stream()
                 .map(creditGoalTransactionEntity ->
                         new CreditGoalTransaction(

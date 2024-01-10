@@ -6,7 +6,6 @@ import ru.ermakov.creator.feature.creator.model.Creator;
 import ru.ermakov.creator.feature.follow.repository.FollowDao;
 import ru.ermakov.creator.feature.user.service.UserService;
 import ru.ermakov.creator.feature.userSubscription.repository.UserSubscriptionDao;
-import ru.ermakov.creator.feature.userSubscription.service.UserSubscriptionService;
 
 import java.util.List;
 
@@ -26,8 +25,8 @@ public class CreatorServiceImpl implements CreatorService {
     }
 
     @Override
-    public List<Creator> getCreatorsByPage(String searchQuery, Integer limit, Integer offset) {
-        return userService.getUsersByPage(searchQuery, limit, offset)
+    public List<Creator> getCreatorPageBySearchQuery(String searchQuery, Integer limit, Integer offset) {
+        return userService.getUserPageBySearchQuery(searchQuery, limit, offset)
                 .stream()
                 .map(user ->
                         getCreatorByUserId(user.id())

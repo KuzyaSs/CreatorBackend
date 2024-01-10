@@ -6,7 +6,7 @@ import ru.ermakov.creator.feature.follow.model.FollowRequest;
 import java.util.List;
 
 public interface FollowService {
-    List<Follow> getFollowsByUserId(String userId);
+    List<Follow> getFollowPageBySearchQueryAndUserId(String searchQuery, Integer limit, Integer offset, String userId);
 
     Follow getFollowByUserAndCreatorIds(FollowRequest followRequest);
 

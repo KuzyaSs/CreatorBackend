@@ -1,7 +1,10 @@
 package ru.ermakov.creator.feature.userSubscription.service;
 
 import org.springframework.stereotype.Service;
+import ru.ermakov.creator.feature.subscription.model.Subscription;
 import ru.ermakov.creator.feature.subscription.service.SubscriptionService;
+import ru.ermakov.creator.feature.transaction.model.UserTransactionRequest;
+import ru.ermakov.creator.feature.transaction.service.TransactionService;
 import ru.ermakov.creator.feature.user.service.UserService;
 import ru.ermakov.creator.feature.userSubscription.exception.DuplicateUserSubscriptionException;
 import ru.ermakov.creator.feature.userSubscription.repository.UserSubscriptionDao;
@@ -15,15 +18,19 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
     private final UserSubscriptionDao userSubscriptionDao;
     private final UserService userService;
     private final SubscriptionService subscriptionService;
+    private final TransactionService transactionService;
+
+    private static final Long BUY_SUBSCRIPTION_TRANSACTION_ID = 4L;
 
     public UserSubscriptionServiceImpl(
             UserSubscriptionDao userSubscriptionDao,
             UserService userService,
-            SubscriptionService subscriptionService
-    ) {
+            SubscriptionService subscriptionService,
+            TransactionService transactionService) {
         this.userSubscriptionDao = userSubscriptionDao;
         this.userService = userService;
         this.subscriptionService = subscriptionService;
+        this.transactionService = transactionService;
     }
 
     @Override
@@ -53,16 +60,27 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
 
     @Override
     public void insertUserSubscription(UserSubscriptionRequest userSubscriptionRequest) {
-        // Checking that a user exists.
+        // Check that a user exists.
         userService.getUserById(userSubscriptionRequest.userId());
+
         // Check that a subscription exists.
-        subscriptionService.getSubscriptionById(userSubscriptionRequest.subscriptionId());
-        // Check that user doesn't have a subscription of this author.
+        Subscription subscription = subscriptionService.getSubscriptionById(userSubscriptionRequest.subscriptionId());
+
+        // Check that user doesn't have a subscription of this creator.
         if (userSubscriptionDao.userSubscriptionExistsByUserAndSubscriptionIds(userSubscriptionRequest.userId(), userSubscriptionRequest.subscriptionId())) {
             throw new DuplicateUserSubscriptionException();
         }
-        // Subtract credits (check user's account for enough credits).
-        // Implement later.
+
+        // Create transaction.
+        UserTransactionRequest userTransactionRequest = new UserTransactionRequest(
+                userSubscriptionRequest.userId(),
+                subscription.creator().user().id(),
+                BUY_SUBSCRIPTION_TRANSACTION_ID,
+                subscription.price() * userSubscriptionRequest.durationInMonths(),
+                ""
+        );
+        transactionService.insertUserTransaction(userTransactionRequest);
+
         userSubscriptionDao.insertUserSubscription(userSubscriptionRequest);
     }
 

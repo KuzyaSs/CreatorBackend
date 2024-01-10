@@ -19,21 +19,21 @@ public class TransactionController {
     }
 
     @GetMapping("user-transactions")
-    public List<UserTransaction> getUserTransactionsByPage(
+    public List<UserTransaction> getUserTransactionPageByUserId(
             @RequestParam String userId,
             @RequestParam Integer limit,
             @RequestParam Integer offset
     ) {
-        return transactionService.getUserTransactionsByPage(userId, limit, offset);
+        return transactionService.getUserTransactionPageByUserId(userId, limit, offset);
     }
 
     @GetMapping("credit-goal-transactions")
-    public List<CreditGoalTransaction> getCreditGoalTransactionsByPage(
+    public List<CreditGoalTransaction> getCreditGoalTransactionPageByCreditGoalId(
             @RequestParam Long creditGoalId,
             @RequestParam Integer limit,
             @RequestParam Integer offset
     ) {
-        return transactionService.getCreditGoalTransactionsByCreditGoalIdByPage(creditGoalId, limit, offset);
+        return transactionService.getCreditGoalTransactionPageByCreditGoalId(creditGoalId, limit, offset);
     }
 
     @GetMapping("users/{userId}/balance")

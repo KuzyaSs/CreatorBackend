@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TransactionDao {
-    List<UserTransactionEntity> getUserTransactionsByPage(String userId, Integer limit, Integer offset);
+    List<UserTransactionEntity> getUserTransactionPageByUserId(String userId, Integer limit, Integer offset);
 
-    List<CreditGoalTransactionEntity> getCreditGoalTransactionsByCreditGoalIdByPage(
+    List<CreditGoalTransactionEntity> getCreditGoalTransactionPageByCreditGoalId(
             Long creditGoalId,
             Integer limit,
             Integer offset

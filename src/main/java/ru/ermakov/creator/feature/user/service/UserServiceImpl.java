@@ -18,8 +18,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getUsersByPage(String searchQuery, Integer limit, Integer offset) {
-        return userDao.getUsersByPage(searchQuery, limit, offset);
+    public List<User> getUserPageBySearchQuery(String searchQuery, Integer limit, Integer offset) {
+        return userDao.getUserPageBySearchQuery(searchQuery, limit, offset);
     }
 
     @Override

@@ -7,7 +7,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FollowDao {
-    List<FollowEntity> getFollowsByUserId(String userId);
+    List<FollowEntity> getFollowPageBySearchQueryAndUserId(
+            String searchQuery,
+            Integer limit,
+            Integer offset,
+            String userId
+    );
 
     Optional<FollowEntity> getFollowByUserAndCreatorIds(FollowRequest followRequest);
 

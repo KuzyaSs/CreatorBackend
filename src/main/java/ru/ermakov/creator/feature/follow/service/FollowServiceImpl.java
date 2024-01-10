@@ -24,8 +24,13 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
-    public List<Follow> getFollowsByUserId(String userId) {
-        return followDao.getFollowsByUserId(userId)
+    public List<Follow> getFollowPageBySearchQueryAndUserId(
+            String searchQuery,
+            Integer limit,
+            Integer offset,
+            String userId
+    ) {
+        return followDao.getFollowPageBySearchQueryAndUserId(searchQuery, limit, offset, userId)
                 .stream()
                 .map(followEntity ->
                         new Follow(

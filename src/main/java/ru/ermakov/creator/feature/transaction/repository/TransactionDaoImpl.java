@@ -23,7 +23,7 @@ public class TransactionDaoImpl implements TransactionDao {
     }
 
     @Override
-    public List<UserTransactionEntity> getUserTransactionsByPage(String userId, Integer limit, Integer offset) {
+    public List<UserTransactionEntity> getUserTransactionPageByUserId(String userId, Integer limit, Integer offset) {
         String query = """
                 SELECT *
                 FROM user_transaction
@@ -42,7 +42,7 @@ public class TransactionDaoImpl implements TransactionDao {
     }
 
     @Override
-    public List<CreditGoalTransactionEntity> getCreditGoalTransactionsByCreditGoalIdByPage(
+    public List<CreditGoalTransactionEntity> getCreditGoalTransactionPageByCreditGoalId(
             Long creditGoalId,
             Integer limit,
             Integer offset

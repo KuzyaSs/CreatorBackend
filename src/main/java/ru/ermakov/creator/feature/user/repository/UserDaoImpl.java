@@ -22,12 +22,12 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> getUsersByPage(String searchQuery, Integer limit, Integer offset) {
+    public List<User> getUserPageBySearchQuery(String searchQuery, Integer limit, Integer offset) {
         String query = """
                 SELECT *
                 FROM public.user
                 WHERE LOWER(username) LIKE LOWER(:search_query)
-                ORDER BY registration_date
+                ORDER BY username
                 LIMIT :limit
                 OFFSET :offset
                     """;

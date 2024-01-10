@@ -16,8 +16,8 @@ public class CreatorController {
     }
 
     @GetMapping
-    public List<Creator> getCreatorsByPage(@RequestParam String searchQuery, @RequestParam Integer limit, @RequestParam Integer offset) {
-        return creatorService.getCreatorsByPage(searchQuery, limit, offset);
+    public List<Creator> getCreatorPageBySearchQuery(@RequestParam String searchQuery, @RequestParam Integer limit, @RequestParam Integer offset) {
+        return creatorService.getCreatorPageBySearchQuery(searchQuery, limit, offset);
     }
 
     @GetMapping("{userId}")

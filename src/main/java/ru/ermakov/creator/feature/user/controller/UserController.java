@@ -17,8 +17,8 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> getUsersByPage(@RequestParam String searchQuery, @RequestParam Integer limit, @RequestParam Integer offset) {
-        return userService.getUsersByPage(searchQuery, limit, offset);
+    public List<User> getUserPageBySearchQuery(@RequestParam String searchQuery, @RequestParam Integer limit, @RequestParam Integer offset) {
+        return userService.getUserPageBySearchQuery(searchQuery, limit, offset);
     }
 
     @GetMapping("{userId}")

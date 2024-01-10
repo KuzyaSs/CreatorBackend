@@ -17,8 +17,13 @@ public class FollowController {
     }
 
     @GetMapping("users/{userId}/follows")
-    List<Follow> getFollowsByUserId(@PathVariable String userId) {
-        return followService.getFollowsByUserId(userId);
+    List<Follow> getFollowPageBySearchQueryAndUserId(
+            @RequestParam String searchQuery,
+            @RequestParam Integer limit,
+            @RequestParam Integer offset,
+            @PathVariable String userId
+    ) {
+        return followService.getFollowPageBySearchQueryAndUserId(searchQuery, limit, offset, userId);
     }
 
     @GetMapping("follows")

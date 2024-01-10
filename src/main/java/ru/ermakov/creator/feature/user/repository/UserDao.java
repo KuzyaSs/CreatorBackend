@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserDao {
-    List<User> getUsersByPage(String searchQuery, Integer limit, Integer offset);
+    List<User> getUserPageBySearchQuery(String searchQuery, Integer limit, Integer offset);
 
     Optional<User> getUserById(String userId);
 
