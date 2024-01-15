@@ -20,9 +20,9 @@ public class TransactionServiceImpl implements TransactionService {
     private final UserService userService;
     private final GoalService goalService;
 
-    private static final Long WITHDRAW_TRANSACTION_ID = 2L;
-    private static final Long CLOSE_CREDIT_GOAL_TRANSACTION_ID = 3L;
-    private static final Long BUY_SUBSCRIPTION_TRANSACTION_ID = 4L;
+    private static final Long WITHDRAWAL_TRANSACTION_ID = 2L;
+    private static final Long CREDIT_GOAL_CLOSURE_TRANSACTION_ID = 3L;
+    private static final Long SUBSCRIPTION_PURCHASE_TRANSACTION_ID = 4L;
     private static final Long TRANSFER_TO_USER_TRANSACTION_ID = 5L;
     private static final Long TRANSFER_TO_CREDIT_GOAL_TRANSACTION_ID = 6L;
 
@@ -33,8 +33,8 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<UserTransaction> getUserTransactionPageByUserId(String userId, Integer limit, Integer offset) {
-        return transactionDao.getUserTransactionPageByUserId(userId, limit, offset)
+    public List<UserTransaction> getUserTransactionPageByUserId(String userId, Long userTransactionId, Integer limit) {
+        return transactionDao.getUserTransactionPageByUserId(userId, userTransactionId, limit)
                 .stream()
                 .map(userTransactionEntity ->
                         new UserTransaction(
@@ -84,8 +84,8 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public void insertUserTransaction(UserTransactionRequest userTransactionRequest) {
-        if ((userTransactionRequest.transactionTypeId().equals(WITHDRAW_TRANSACTION_ID) ||
-             userTransactionRequest.transactionTypeId().equals(BUY_SUBSCRIPTION_TRANSACTION_ID) ||
+        if ((userTransactionRequest.transactionTypeId().equals(WITHDRAWAL_TRANSACTION_ID) ||
+             userTransactionRequest.transactionTypeId().equals(SUBSCRIPTION_PURCHASE_TRANSACTION_ID) ||
              userTransactionRequest.transactionTypeId().equals(TRANSFER_TO_USER_TRANSACTION_ID)) &&
             getBalanceByUserId(userTransactionRequest.senderUserId()) < userTransactionRequest.amount()
         ) {
@@ -103,7 +103,7 @@ public class TransactionServiceImpl implements TransactionService {
             throw new InsufficientFundsInAccountException();
         }
 
-        if (creditGoalTransactionRequest.transactionTypeId().equals(CLOSE_CREDIT_GOAL_TRANSACTION_ID) &&
+        if (creditGoalTransactionRequest.transactionTypeId().equals(CREDIT_GOAL_CLOSURE_TRANSACTION_ID) &&
             getBalanceByCreditGoalId(creditGoalTransactionRequest.creditGoalId()) < creditGoalTransactionRequest.amount()
         ) {
             throw new InsufficientFundsInGoalException();

@@ -18,18 +18,18 @@ public class TransactionController {
         this.transactionService = transactionService;
     }
 
-    @GetMapping("user-transactions")
+    @GetMapping("users/{userId}/transactions")
     public List<UserTransaction> getUserTransactionPageByUserId(
-            @RequestParam String userId,
-            @RequestParam Integer limit,
-            @RequestParam Integer offset
+            @PathVariable("userId") String userId,
+            @RequestParam Long userTransactionId,
+            @RequestParam Integer limit
     ) {
-        return transactionService.getUserTransactionPageByUserId(userId, limit, offset);
+        return transactionService.getUserTransactionPageByUserId(userId, userTransactionId, limit);
     }
 
-    @GetMapping("credit-goal-transactions")
+    @GetMapping("credit-goals/{creditGoalId}/transactions")
     public List<CreditGoalTransaction> getCreditGoalTransactionPageByCreditGoalId(
-            @RequestParam Long creditGoalId,
+            @PathVariable("creditGoalId") Long creditGoalId,
             @RequestParam Integer limit,
             @RequestParam Integer offset
     ) {

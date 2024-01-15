@@ -23,20 +23,21 @@ public class TransactionDaoImpl implements TransactionDao {
     }
 
     @Override
-    public List<UserTransactionEntity> getUserTransactionPageByUserId(String userId, Integer limit, Integer offset) {
+    public List<UserTransactionEntity> getUserTransactionPageByUserId(String userId, Long userTransactionId, Integer limit) {
         String query = """
                 SELECT *
                 FROM user_transaction
-                WHERE sender_user_id = :user_id
-                    OR receiver_user_id = :user_id
+                WHERE id < :id
+                    AND (sender_user_id = :user_id
+                    OR receiver_user_id = :user_id)
+                ORDER BY id DESC
                 LIMIT :limit
-                OFFSET :offset
                     """;
 
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
+                .addValue(ID_COLUMN, userTransactionId)
                 .addValue(USER_ID_COLUMN, userId)
-                .addValue(LIMIT_PARAM, limit)
-                .addValue(OFFSET_PARAM, offset);
+                .addValue(LIMIT_PARAM, limit);
 
         return jdbcTemplate.query(query, sqlParameterSource, new UserTransactionRowMapper());
     }
@@ -67,11 +68,11 @@ public class TransactionDaoImpl implements TransactionDao {
     public Long getBalanceByUserId(String userId) {
         String query = """
                 SELECT COALESCE(SUM(
-                    CASE WHEN (name in ('Deposit', 'Close credit goal') AND receiver_user_id = :user_id)
-                        OR (name in ('Buy subscription', 'Transfer to user') AND sender_user_id != :user_id AND receiver_user_id = :user_id)
+                    CASE WHEN (name in ('Top-up', 'Credit goal closure') AND receiver_user_id = :user_id)
+                        OR (name in ('Subscription purchase', 'Transfer to a user') AND sender_user_id != :user_id AND receiver_user_id = :user_id)
                     THEN amount
-                         WHEN name = 'Withdraw'
-                            OR (name in ('Buy subscription', 'Transfer to user', 'Transfer to credit goal') AND sender_user_id = :user_id AND receiver_user_id != :user_id)
+                         WHEN name = 'Withdrawal'
+                            OR (name in ('Subscription purchase', 'Transfer to a user', 'Transfer to a credit goal') AND sender_user_id = :user_id AND receiver_user_id != :user_id)
                          THEN amount * (-1)
                          ELSE 0
                     END
@@ -91,8 +92,8 @@ public class TransactionDaoImpl implements TransactionDao {
     public Long getBalanceByCreditGoalId(Long creditGoalId) {
         String query = """
                 SELECT COALESCE(SUM(
-                    CASE WHEN name = 'Transfer to credit goal' THEN amount
-                         WHEN name = 'Close credit goal' THEN amount * (-1)
+                    CASE WHEN name = 'Transfer to a credit goal' THEN amount
+                         WHEN name = 'Credit goal closure' THEN amount * (-1)
                          ELSE 0
                     END
                 ), 0) AS balance
