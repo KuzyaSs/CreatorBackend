@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import ru.ermakov.creator.feature.follow.exception.FollowNotFoundException;
-import ru.ermakov.creator.feature.goal.exception.GoalNotFoundException;
+import ru.ermakov.creator.feature.creditGoal.exception.CreditGoalNotFoundException;
 import ru.ermakov.creator.feature.subscription.exception.DuplicateSubscriptionTitleException;
 import ru.ermakov.creator.feature.subscription.exception.SubscriptionNotFoundException;
 import ru.ermakov.creator.feature.transaction.exception.InsufficientFundsInAccountException;
@@ -34,7 +34,7 @@ public class ApiExceptionHandler {
     @ExceptionHandler(value = {UserNotFoundException.class,
             FollowNotFoundException.class,
             SubscriptionNotFoundException.class,
-            GoalNotFoundException.class,
+            CreditGoalNotFoundException.class,
             TransactionNotFoundException.class
     })
     public ResponseEntity<Object> handleNotFoundException(RuntimeException e, HttpServletRequest request) {

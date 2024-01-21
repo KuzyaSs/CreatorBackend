@@ -1,12 +1,12 @@
-package ru.ermakov.creator.feature.goal.repository;
+package ru.ermakov.creator.feature.creditGoal.repository;
 
-import ru.ermakov.creator.feature.goal.model.CreditGoalEntity;
-import ru.ermakov.creator.feature.goal.model.CreditGoalRequest;
+import ru.ermakov.creator.feature.creditGoal.model.CreditGoalEntity;
+import ru.ermakov.creator.feature.creditGoal.model.CreditGoalRequest;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface GoalDao {
+public interface CreditGoalDao {
     List<CreditGoalEntity> getCreditGoalsByCreatorId(String creatorId);
 
     Optional<CreditGoalEntity> getCreditGoalById(Long creditGoalId);

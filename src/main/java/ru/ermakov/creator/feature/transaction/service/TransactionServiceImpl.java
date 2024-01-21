@@ -1,7 +1,7 @@
 package ru.ermakov.creator.feature.transaction.service;
 
 import org.springframework.stereotype.Service;
-import ru.ermakov.creator.feature.goal.service.GoalService;
+import ru.ermakov.creator.feature.creditGoal.service.CreditGoalService;
 import ru.ermakov.creator.feature.transaction.exception.InsufficientFundsInAccountException;
 import ru.ermakov.creator.feature.transaction.exception.InsufficientFundsInGoalException;
 import ru.ermakov.creator.feature.transaction.exception.TransactionNotFoundException;
@@ -18,7 +18,7 @@ import java.util.List;
 public class TransactionServiceImpl implements TransactionService {
     private final TransactionDao transactionDao;
     private final UserService userService;
-    private final GoalService goalService;
+    private final CreditGoalService creditGoalService;
 
     private static final Long WITHDRAWAL_TRANSACTION_ID = 2L;
     private static final Long CREDIT_GOAL_CLOSURE_TRANSACTION_ID = 3L;
@@ -26,10 +26,10 @@ public class TransactionServiceImpl implements TransactionService {
     private static final Long TRANSFER_TO_USER_TRANSACTION_ID = 5L;
     private static final Long TRANSFER_TO_CREDIT_GOAL_TRANSACTION_ID = 6L;
 
-    public TransactionServiceImpl(TransactionDao transactionDao, UserService userService, GoalService goalService) {
+    public TransactionServiceImpl(TransactionDao transactionDao, UserService userService, CreditGoalService creditGoalService) {
         this.transactionDao = transactionDao;
         this.userService = userService;
-        this.goalService = goalService;
+        this.creditGoalService = creditGoalService;
     }
 
     @Override
@@ -61,7 +61,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .map(creditGoalTransactionEntity ->
                         new CreditGoalTransaction(
                                 creditGoalTransactionEntity.id(),
-                                goalService.getCreditGoalById(creditGoalTransactionEntity.creditGoalId()),
+                                creditGoalService.getCreditGoalById(creditGoalTransactionEntity.creditGoalId()),
                                 userService.getUserById(creditGoalTransactionEntity.userId()),
                                 transactionDao.getTransactionTypeById(creditGoalTransactionEntity.transactionTypeId())
                                         .orElseThrow(TransactionNotFoundException::new),
@@ -103,10 +103,12 @@ public class TransactionServiceImpl implements TransactionService {
             throw new InsufficientFundsInAccountException();
         }
 
-        if (creditGoalTransactionRequest.transactionTypeId().equals(CREDIT_GOAL_CLOSURE_TRANSACTION_ID) &&
-            getBalanceByCreditGoalId(creditGoalTransactionRequest.creditGoalId()) < creditGoalTransactionRequest.amount()
-        ) {
-            throw new InsufficientFundsInGoalException();
+        if (creditGoalTransactionRequest.transactionTypeId().equals(CREDIT_GOAL_CLOSURE_TRANSACTION_ID)) {
+            if (getBalanceByCreditGoalId(creditGoalTransactionRequest.creditGoalId()) >= creditGoalTransactionRequest.amount()) {
+                creditGoalService.deleteCreditGoalById(creditGoalTransactionRequest.creditGoalId());
+            } else {
+                throw new InsufficientFundsInGoalException();
+            }
         }
 
         UserTransactionRequest userTransactionRequest = new UserTransactionRequest(

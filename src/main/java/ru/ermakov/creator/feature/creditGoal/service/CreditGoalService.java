@@ -1,11 +1,11 @@
-package ru.ermakov.creator.feature.goal.service;
+package ru.ermakov.creator.feature.creditGoal.service;
 
-import ru.ermakov.creator.feature.goal.model.CreditGoal;
-import ru.ermakov.creator.feature.goal.model.CreditGoalRequest;
+import ru.ermakov.creator.feature.creditGoal.model.CreditGoal;
+import ru.ermakov.creator.feature.creditGoal.model.CreditGoalRequest;
 
 import java.util.List;
 
-public interface GoalService {
+public interface CreditGoalService {
     List<CreditGoal> getCreditGoalsByCreatorId(String creatorId);
 
     CreditGoal getCreditGoalById(Long creditGoalId);

@@ -1,32 +1,31 @@
-package ru.ermakov.creator.feature.goal.service;
+package ru.ermakov.creator.feature.creditGoal.service;
 
 import org.springframework.stereotype.Service;
 import ru.ermakov.creator.feature.creator.service.CreatorService;
-import ru.ermakov.creator.feature.goal.exception.GoalNotFoundException;
-import ru.ermakov.creator.feature.goal.model.CreditGoal;
-import ru.ermakov.creator.feature.goal.model.CreditGoalEntity;
-import ru.ermakov.creator.feature.goal.model.CreditGoalRequest;
-import ru.ermakov.creator.feature.goal.repository.GoalDao;
+import ru.ermakov.creator.feature.creditGoal.exception.CreditGoalNotFoundException;
+import ru.ermakov.creator.feature.creditGoal.model.CreditGoal;
+import ru.ermakov.creator.feature.creditGoal.model.CreditGoalEntity;
+import ru.ermakov.creator.feature.creditGoal.model.CreditGoalRequest;
+import ru.ermakov.creator.feature.creditGoal.repository.CreditGoalDao;
 import ru.ermakov.creator.feature.transaction.repository.TransactionDao;
-import ru.ermakov.creator.feature.transaction.service.TransactionService;
 
 import java.util.List;
 
 @Service
-public class GoalServiceImpl implements GoalService {
-    private final GoalDao goalDao;
+public class CreditGoalServiceImpl implements CreditGoalService {
+    private final CreditGoalDao creditGoalDao;
     private final CreatorService creatorService;
     private final TransactionDao transactionDao;
 
-    public GoalServiceImpl(GoalDao goalDao, CreatorService creatorService, TransactionDao transactionDao) {
-        this.goalDao = goalDao;
+    public CreditGoalServiceImpl(CreditGoalDao creditGoalDao, CreatorService creatorService, TransactionDao transactionDao) {
+        this.creditGoalDao = creditGoalDao;
         this.creatorService = creatorService;
         this.transactionDao = transactionDao;
     }
 
     @Override
     public List<CreditGoal> getCreditGoalsByCreatorId(String creatorId) {
-        return goalDao.getCreditGoalsByCreatorId(creatorId)
+        return creditGoalDao.getCreditGoalsByCreatorId(creatorId)
                 .stream()
                 .map(creditGoalEntity ->
                         new CreditGoal(
@@ -42,8 +41,8 @@ public class GoalServiceImpl implements GoalService {
 
     @Override
     public CreditGoal getCreditGoalById(Long creditGoalId) {
-        CreditGoalEntity creditGoalEntity = goalDao.getCreditGoalById(creditGoalId)
-                .orElseThrow(GoalNotFoundException::new);
+        CreditGoalEntity creditGoalEntity = creditGoalDao.getCreditGoalById(creditGoalId)
+                .orElseThrow(CreditGoalNotFoundException::new);
         return new CreditGoal(
                 creditGoalEntity.id(),
                 creatorService.getCreatorByUserId(creditGoalEntity.creatorId()),
@@ -56,16 +55,16 @@ public class GoalServiceImpl implements GoalService {
 
     @Override
     public void insertCreditGoal(CreditGoalRequest creditGoalRequest) {
-        goalDao.insertCreditGoal(creditGoalRequest);
+        creditGoalDao.insertCreditGoal(creditGoalRequest);
     }
 
     @Override
     public void updateCreditGoal(Long creditGoalId, CreditGoalRequest creditGoalRequest) {
-        goalDao.updateCreditGoal(creditGoalId, creditGoalRequest);
+        creditGoalDao.updateCreditGoal(creditGoalId, creditGoalRequest);
     }
 
     @Override
     public void deleteCreditGoalById(Long creditGoalId) {
-        goalDao.deleteCreditGoalById(creditGoalId);
+        creditGoalDao.deleteCreditGoalById(creditGoalId);
     }
 }

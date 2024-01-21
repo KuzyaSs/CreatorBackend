@@ -1,4 +1,4 @@
-package ru.ermakov.creator.feature.goal.model;
+package ru.ermakov.creator.feature.creditGoal.model;
 
 import java.sql.Timestamp;
 

@@ -1,12 +1,12 @@
-package ru.ermakov.creator.feature.goal.repository;
+package ru.ermakov.creator.feature.creditGoal.repository;
 
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
-import ru.ermakov.creator.feature.goal.model.CreditGoalEntity;
-import ru.ermakov.creator.feature.goal.model.CreditGoalRequest;
-import ru.ermakov.creator.feature.goal.repository.mapper.CreditGoalRowMapper;
+import ru.ermakov.creator.feature.creditGoal.model.CreditGoalEntity;
+import ru.ermakov.creator.feature.creditGoal.model.CreditGoalRequest;
+import ru.ermakov.creator.feature.creditGoal.repository.mapper.CreditGoalRowMapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,10 +14,10 @@ import java.util.Optional;
 import static ru.ermakov.creator.feature.shared.ParamNameConstants.*;
 
 @Repository
-public class GoalDaoImpl implements GoalDao {
+public class CreditGoalDaoImpl implements CreditGoalDao {
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    public GoalDaoImpl(NamedParameterJdbcTemplate jdbcTemplate) {
+    public CreditGoalDaoImpl(NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

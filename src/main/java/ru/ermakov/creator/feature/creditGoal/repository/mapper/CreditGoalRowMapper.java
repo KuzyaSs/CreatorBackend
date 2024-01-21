@@ -1,7 +1,7 @@
-package ru.ermakov.creator.feature.goal.repository.mapper;
+package ru.ermakov.creator.feature.creditGoal.repository.mapper;
 
 import org.springframework.jdbc.core.RowMapper;
-import ru.ermakov.creator.feature.goal.model.CreditGoalEntity;
+import ru.ermakov.creator.feature.creditGoal.model.CreditGoalEntity;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
