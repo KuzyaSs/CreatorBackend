@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import ru.ermakov.creator.feature.follow.exception.FollowNotFoundException;
 import ru.ermakov.creator.feature.creditGoal.exception.CreditGoalNotFoundException;
+import ru.ermakov.creator.feature.post.exception.PostNotFoundException;
 import ru.ermakov.creator.feature.subscription.exception.DuplicateSubscriptionTitleException;
 import ru.ermakov.creator.feature.subscription.exception.SubscriptionNotFoundException;
 import ru.ermakov.creator.feature.tag.exception.DuplicateTagNameException;
@@ -38,7 +39,8 @@ public class ApiExceptionHandler {
             SubscriptionNotFoundException.class,
             CreditGoalNotFoundException.class,
             TransactionNotFoundException.class,
-            TagNotFoundException.class
+            TagNotFoundException.class,
+            PostNotFoundException.class
     })
     public ResponseEntity<Object> handleNotFoundException(RuntimeException e, HttpServletRequest request) {
         ApiExceptionBody apiExceptionBody = new ApiExceptionBody(
