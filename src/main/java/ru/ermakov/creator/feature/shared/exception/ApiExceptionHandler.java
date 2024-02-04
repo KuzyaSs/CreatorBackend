@@ -9,6 +9,8 @@ import ru.ermakov.creator.feature.follow.exception.FollowNotFoundException;
 import ru.ermakov.creator.feature.creditGoal.exception.CreditGoalNotFoundException;
 import ru.ermakov.creator.feature.subscription.exception.DuplicateSubscriptionTitleException;
 import ru.ermakov.creator.feature.subscription.exception.SubscriptionNotFoundException;
+import ru.ermakov.creator.feature.tag.exception.DuplicateTagNameException;
+import ru.ermakov.creator.feature.tag.exception.TagNotFoundException;
 import ru.ermakov.creator.feature.transaction.exception.InsufficientFundsInAccountException;
 import ru.ermakov.creator.feature.transaction.exception.InsufficientFundsInGoalException;
 import ru.ermakov.creator.feature.transaction.exception.TransactionNotFoundException;
@@ -35,7 +37,8 @@ public class ApiExceptionHandler {
             FollowNotFoundException.class,
             SubscriptionNotFoundException.class,
             CreditGoalNotFoundException.class,
-            TransactionNotFoundException.class
+            TransactionNotFoundException.class,
+            TagNotFoundException.class
     })
     public ResponseEntity<Object> handleNotFoundException(RuntimeException e, HttpServletRequest request) {
         ApiExceptionBody apiExceptionBody = new ApiExceptionBody(
@@ -49,7 +52,8 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(value = {DuplicateUsernameException.class,
             DuplicateSubscriptionTitleException.class,
-            DuplicateUserSubscriptionException.class
+            DuplicateUserSubscriptionException.class,
+            DuplicateTagNameException.class
     })
     public ResponseEntity<Object> handleConflictException(RuntimeException e, HttpServletRequest request) {
         ApiExceptionBody apiExceptionBody = new ApiExceptionBody(
