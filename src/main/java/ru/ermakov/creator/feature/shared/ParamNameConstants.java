@@ -30,6 +30,8 @@ public final class ParamNameConstants {
     public static final String TRANSACTION_TYPE_ID_COLUMN = "transaction_type_id";
     public static final String TRANSACTION_DATE_COLUMN = "transaction_date";
     public static final String CREDIT_GOAL_ID_COLUMN = "credit_goal_id";
+    public static final String POST_ID_COLUMN = "post_id";
+    public static final String TAG_ID_COLUMN = "tag_id";
 
 
     public static final String LIMIT_PARAM = "limit";

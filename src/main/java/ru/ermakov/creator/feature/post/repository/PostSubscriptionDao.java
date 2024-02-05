@@ -9,4 +9,6 @@ public interface PostSubscriptionDao {
     List<PostSubscriptionEntity> getSubscriptionsByPostId(Long postId);
 
     void insertSubscriptionsByPostId(List<Subscription> subscriptions, Long postId);
+
+    void deleteSubscriptionsByPostId(Long postId);
 }

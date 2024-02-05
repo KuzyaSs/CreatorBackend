@@ -9,4 +9,6 @@ public interface PostTagDao {
     List<PostTagEntity> getTagsByPostId(Long postId);
 
     void insertTagsByPostId(List<Tag> tags, Long postId);
+
+    void deleteTagsByPostId(Long postId);
 }
