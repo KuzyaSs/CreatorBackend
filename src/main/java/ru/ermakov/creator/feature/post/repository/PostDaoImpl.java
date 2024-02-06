@@ -11,10 +11,6 @@ import java.util.Optional;
 
 @Repository
 public class PostDaoImpl implements PostDao {
-    @Override
-    public List<PostEntity> getFilteredPostPage(FeedFilter feedFilter, Long postId, Integer limit) {
-        return null;
-    }
 
     @Override
     public List<PostEntity> getFilteredPostPageByUserId(String userId, FeedFilter feedFilter, Long postId, Integer limit) {
@@ -22,17 +18,22 @@ public class PostDaoImpl implements PostDao {
     }
 
     @Override
-    public List<PostEntity> getFilteredPostPageByCreatorId(String creatorId, BlogFilter blogFilter, Long postId, Integer limit) {
+    public List<PostEntity> getFilteredFollowingPostPageByUserId(String userId, FeedFilter feedFilter, Long postId, Integer limit) {
         return null;
     }
 
     @Override
-    public List<PostEntity> getPostPageBySearchQuery(String searchQuery, Long postId, Integer limit) {
+    public List<PostEntity> getFilteredPostPageByUserAndCreatorIds(String userId, String creatorId, BlogFilter blogFilter, Long postId, Integer limit) {
         return null;
     }
 
     @Override
-    public Optional<PostEntity> getPostById(Long postId) {
+    public List<PostEntity> getPostPageByUserIdAndSearchQuery(String userId, String searchQuery, Long postId, Integer limit) {
+        return null;
+    }
+
+    @Override
+    public Optional<PostEntity> getPostByUserAndPostIds(String userId, Long postId) {
         return Optional.empty();
     }
 

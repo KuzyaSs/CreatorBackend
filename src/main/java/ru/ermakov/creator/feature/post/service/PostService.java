@@ -9,18 +9,18 @@ import java.util.List;
 
 public interface PostService {
     // In the feed screen.
-    List<Post> getFilteredPostPage(FeedFilter feedFilter, Long postId, Integer limit);
-
-    // In the following screen.
     List<Post> getFilteredPostPageByUserId(String userId, FeedFilter feedFilter, Long postId, Integer limit);
 
+    // In the following screen.
+    List<Post> getFilteredFollowingPostPageByUserId(String userId, FeedFilter feedFilter, Long postId, Integer limit);
+
     // In the blog screen.
-    List<Post> getFilteredPostPageByCreatorId(String creatorId, BlogFilter blogFilter, Long postId, Integer limit);
+    List<Post> getFilteredPostPageByUserAndCreatorIds(String userId, String creatorId, BlogFilter blogFilter, Long postId, Integer limit);
 
     // In the search screen.
-    List<Post> getPostPageBySearchQuery(String searchQuery, Long postId, Integer limit);
+    List<Post> getPostPageByUserIdAndSearchQuery(String userId, String searchQuery, Long postId, Integer limit);
 
-    Post getPostById(Long postId);
+    Post getPostByUserAndPostIds(String userId, Long postId);
 
     void insertPost(PostRequest postRequest);
 

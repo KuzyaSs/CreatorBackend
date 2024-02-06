@@ -8,4 +8,6 @@ public interface PostLikeDao {
     void insertLike(LikeRequest likeRequest);
 
     void deleteLike(LikeRequest likeRequest);
+
+    Boolean isLikedPostByUserId(LikeRequest likeRequest);
 }

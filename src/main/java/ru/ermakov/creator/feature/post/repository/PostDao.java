@@ -9,15 +9,15 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PostDao {
-    List<PostEntity> getFilteredPostPage(FeedFilter feedFilter, Long postId, Integer limit);
-
     List<PostEntity> getFilteredPostPageByUserId(String userId, FeedFilter feedFilter, Long postId, Integer limit);
 
-    List<PostEntity> getFilteredPostPageByCreatorId(String creatorId, BlogFilter blogFilter, Long postId, Integer limit);
+    List<PostEntity> getFilteredFollowingPostPageByUserId(String userId, FeedFilter feedFilter, Long postId, Integer limit);
 
-    List<PostEntity> getPostPageBySearchQuery(String searchQuery, Long postId, Integer limit);
+    List<PostEntity> getFilteredPostPageByUserAndCreatorIds(String userId, String creatorId, BlogFilter blogFilter, Long postId, Integer limit);
 
-    Optional<PostEntity> getPostById(Long postId);
+    List<PostEntity> getPostPageByUserIdAndSearchQuery(String userId, String searchQuery, Long postId, Integer limit);
+
+    Optional<PostEntity> getPostByUserAndPostIds(String userId, Long postId);
 
     Long insertPost(PostRequest postRequest);
 

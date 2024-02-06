@@ -5,6 +5,7 @@ import ru.ermakov.creator.feature.creator.service.CreatorService;
 import ru.ermakov.creator.feature.post.exception.PostNotFoundException;
 import ru.ermakov.creator.feature.post.model.filter.BlogFilter;
 import ru.ermakov.creator.feature.post.model.filter.FeedFilter;
+import ru.ermakov.creator.feature.post.model.like.LikeRequest;
 import ru.ermakov.creator.feature.post.model.post.Post;
 import ru.ermakov.creator.feature.post.model.post.PostEntity;
 import ru.ermakov.creator.feature.post.model.post.PostRequest;
@@ -38,26 +39,6 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> getFilteredPostPage(FeedFilter feedFilter, Long postId, Integer limit) {
-        return postDao.getFilteredPostPage(feedFilter, postId, limit)
-                .stream()
-                .map(postEntity ->
-                        new Post(
-                                postEntity.id(),
-                                creatorService.getCreatorByUserId(postEntity.creatorId()),
-                                postEntity.title(),
-                                postEntity.content(),
-                                postImageService.getImagesByPostId(postEntity.id()),
-                                postTagService.getTagsByPostId(postEntity.id()),
-                                postSubscriptionService.getSubscriptionsByPostId(postEntity.id()),
-                                postLikeService.getLikeCountByPostId(postEntity.id()),
-                                postEntity.publicationDate(),
-                                postEntity.isEdited()
-                        )
-                ).toList();
-    }
-
-    @Override
     public List<Post> getFilteredPostPageByUserId(String userId, FeedFilter feedFilter, Long postId, Integer limit) {
         return postDao.getFilteredPostPageByUserId(userId, feedFilter, postId, limit)
                 .stream()
@@ -72,14 +53,15 @@ public class PostServiceImpl implements PostService {
                                 postSubscriptionService.getSubscriptionsByPostId(postEntity.id()),
                                 postLikeService.getLikeCountByPostId(postEntity.id()),
                                 postEntity.publicationDate(),
+                                postLikeService.isLikedPostByUserId(new LikeRequest(userId, postEntity.id())),
                                 postEntity.isEdited()
                         )
                 ).toList();
     }
 
     @Override
-    public List<Post> getFilteredPostPageByCreatorId(String creatorId, BlogFilter blogFilter, Long postId, Integer limit) {
-        return postDao.getFilteredPostPageByCreatorId(creatorId, blogFilter, postId, limit)
+    public List<Post> getFilteredFollowingPostPageByUserId(String userId, FeedFilter feedFilter, Long postId, Integer limit) {
+        return postDao.getFilteredFollowingPostPageByUserId(userId, feedFilter, postId, limit)
                 .stream()
                 .map(postEntity ->
                         new Post(
@@ -92,14 +74,15 @@ public class PostServiceImpl implements PostService {
                                 postSubscriptionService.getSubscriptionsByPostId(postEntity.id()),
                                 postLikeService.getLikeCountByPostId(postEntity.id()),
                                 postEntity.publicationDate(),
+                                postLikeService.isLikedPostByUserId(new LikeRequest(userId, postEntity.id())),
                                 postEntity.isEdited()
                         )
                 ).toList();
     }
 
     @Override
-    public List<Post> getPostPageBySearchQuery(String searchQuery, Long postId, Integer limit) {
-        return postDao.getPostPageBySearchQuery(searchQuery, postId, limit)
+    public List<Post> getFilteredPostPageByUserAndCreatorIds(String userId, String creatorId, BlogFilter blogFilter, Long postId, Integer limit) {
+        return postDao.getFilteredPostPageByUserAndCreatorIds(userId, creatorId, blogFilter, postId, limit)
                 .stream()
                 .map(postEntity ->
                         new Post(
@@ -112,14 +95,36 @@ public class PostServiceImpl implements PostService {
                                 postSubscriptionService.getSubscriptionsByPostId(postEntity.id()),
                                 postLikeService.getLikeCountByPostId(postEntity.id()),
                                 postEntity.publicationDate(),
+                                postLikeService.isLikedPostByUserId(new LikeRequest(userId, postEntity.id())),
                                 postEntity.isEdited()
                         )
                 ).toList();
     }
 
     @Override
-    public Post getPostById(Long postId) {
-        PostEntity postEntity = postDao.getPostById(postId).orElseThrow(PostNotFoundException::new);
+    public List<Post> getPostPageByUserIdAndSearchQuery(String userId, String searchQuery, Long postId, Integer limit) {
+        return postDao.getPostPageByUserIdAndSearchQuery(userId, searchQuery, postId, limit)
+                .stream()
+                .map(postEntity ->
+                        new Post(
+                                postEntity.id(),
+                                creatorService.getCreatorByUserId(postEntity.creatorId()),
+                                postEntity.title(),
+                                postEntity.content(),
+                                postImageService.getImagesByPostId(postEntity.id()),
+                                postTagService.getTagsByPostId(postEntity.id()),
+                                postSubscriptionService.getSubscriptionsByPostId(postEntity.id()),
+                                postLikeService.getLikeCountByPostId(postEntity.id()),
+                                postEntity.publicationDate(),
+                                postLikeService.isLikedPostByUserId(new LikeRequest(userId, postEntity.id())),
+                                postEntity.isEdited()
+                        )
+                ).toList();
+    }
+
+    @Override
+    public Post getPostByUserAndPostIds(String userId, Long postId) {
+        PostEntity postEntity = postDao.getPostByUserAndPostIds(userId, postId).orElseThrow(PostNotFoundException::new);
         return new Post(
                 postEntity.id(),
                 creatorService.getCreatorByUserId(postEntity.creatorId()),
@@ -130,6 +135,7 @@ public class PostServiceImpl implements PostService {
                 postSubscriptionService.getSubscriptionsByPostId(postEntity.id()),
                 postLikeService.getLikeCountByPostId(postEntity.id()),
                 postEntity.publicationDate(),
+                postLikeService.isLikedPostByUserId(new LikeRequest(userId, postEntity.id())),
                 postEntity.isEdited()
         );
     }

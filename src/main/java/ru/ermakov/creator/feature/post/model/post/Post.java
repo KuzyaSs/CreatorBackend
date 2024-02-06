@@ -18,6 +18,7 @@ public record Post(
         List<Subscription> requiredSubscriptions,
         Long likeCount,
         Timestamp publicationDate,
+        Boolean isLiked,
         Boolean isEdited
 ) {
 }
