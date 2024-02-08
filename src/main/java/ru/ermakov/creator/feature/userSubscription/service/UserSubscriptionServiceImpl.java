@@ -59,6 +59,11 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
     }
 
     @Override
+    public Boolean isUserSubscribedBySubscriptionIds(String userId, List<Long> subscriptionIds) {
+        return userSubscriptionDao.isUserSubscribedBySubscriptionIds(userId, subscriptionIds);
+    }
+
+    @Override
     public void insertUserSubscription(UserSubscriptionRequest userSubscriptionRequest) {
         // Check that a user exists.
         userService.getUserById(userSubscriptionRequest.userId());

@@ -12,6 +12,8 @@ public interface UserSubscriptionDao {
 
     Long getSubscriberCountByCreatorId(String creatorId);
 
+    Boolean isUserSubscribedBySubscriptionIds(String userId, List<Long> subscriptionIds);
+
     void insertUserSubscription(UserSubscriptionRequest userSubscriptionRequest);
 
     void deleteUserSubscriptionById(Long userSubscriptionId);

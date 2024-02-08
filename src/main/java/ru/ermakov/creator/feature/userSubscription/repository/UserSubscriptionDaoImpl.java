@@ -72,6 +72,25 @@ public class UserSubscriptionDaoImpl implements UserSubscriptionDao {
     }
 
     @Override
+    public Boolean isUserSubscribedBySubscriptionIds(String userId, List<Long> subscriptionIds) {
+        String query = """
+                SELECT EXISTS(
+                    SELECT 1
+                    FROM user_subscription
+                    WHERE user_id = :user_id
+                        AND subscription_id IN :subscription_id
+                        AND NOW() BETWEEN start_date AND end_date
+                )
+                    """;
+
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
+                .addValue(USER_ID_COLUMN, userId)
+                .addValue(SUBSCRIPTION_ID_COLUMN, subscriptionIds);
+
+        return jdbcTemplate.queryForObject(query, sqlParameterSource, Boolean.class);
+    }
+
+    @Override
     public void insertUserSubscription(UserSubscriptionRequest userSubscriptionRequest) {
         String query = """
                 INSERT INTO user_subscription (subscription_id, user_id, end_date)
