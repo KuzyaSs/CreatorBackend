@@ -1,7 +1,7 @@
 package ru.ermakov.creator.feature.post.repository.mapper;
 
 import org.springframework.jdbc.core.RowMapper;
-import ru.ermakov.creator.feature.post.model.post.PostEntity;
+import ru.ermakov.creator.feature.post.model.PostEntity;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

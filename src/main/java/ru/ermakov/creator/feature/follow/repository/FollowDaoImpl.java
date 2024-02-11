@@ -52,6 +52,19 @@ public class FollowDaoImpl implements FollowDao {
     }
 
     @Override
+    public List<FollowEntity> getFollowsByUserId(String userId) {
+        String query = """
+                SELECT *
+                FROM follow
+                WHERE user_id = :user_id
+                    """;
+
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource(USER_ID_COLUMN, userId);
+
+        return jdbcTemplate.query(query, sqlParameterSource, new FollowRowMapper());
+    }
+
+    @Override
     public Optional<FollowEntity> getFollowByUserAndCreatorIds(FollowRequest followRequest) {
         String query = """
                 SELECT *

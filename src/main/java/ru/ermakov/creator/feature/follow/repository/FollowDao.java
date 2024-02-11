@@ -14,6 +14,8 @@ public interface FollowDao {
             String userId
     );
 
+    List<FollowEntity> getFollowsByUserId(String userId);
+
     Optional<FollowEntity> getFollowByUserAndCreatorIds(FollowRequest followRequest);
 
     Long getFollowerCountByUserId(String userId);

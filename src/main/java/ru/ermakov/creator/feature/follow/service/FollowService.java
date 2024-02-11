@@ -8,6 +8,8 @@ import java.util.List;
 public interface FollowService {
     List<Follow> getFollowPageBySearchQueryAndUserId(String searchQuery, Integer limit, Integer offset, String userId);
 
+    List<Follow> getFollowsByUserId(String userId);
+
     Follow getFollowByUserAndCreatorIds(FollowRequest followRequest);
 
     Long getFollowerCountByUserId(String userId);

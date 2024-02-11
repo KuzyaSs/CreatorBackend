@@ -43,6 +43,20 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
+    public List<Follow> getFollowsByUserId(String userId) {
+        return followDao.getFollowsByUserId(userId)
+                .stream()
+                .map(followEntity ->
+                        new Follow(
+                                followEntity.id(),
+                                userService.getUserById(followEntity.userId()),
+                                creatorService.getCreatorByUserId(followEntity.creatorId()),
+                                followEntity.startDate()
+                        )
+                ).toList();
+    }
+
+    @Override
     public Follow getFollowByUserAndCreatorIds(FollowRequest followRequest) {
         FollowEntity followEntity = followDao.getFollowByUserAndCreatorIds(followRequest)
                 .orElseThrow(FollowNotFoundException::new);

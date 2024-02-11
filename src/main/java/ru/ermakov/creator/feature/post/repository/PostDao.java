@@ -1,21 +1,40 @@
 package ru.ermakov.creator.feature.post.repository;
 
-import ru.ermakov.creator.feature.post.model.post.PostEntity;
-import ru.ermakov.creator.feature.post.model.post.PostRequest;
+import ru.ermakov.creator.feature.post.model.PostEntity;
+import ru.ermakov.creator.feature.post.model.PostRequest;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface PostDao {
-    List<PostEntity> getFilteredPostPageByUserId(Long postId, Integer limit);
+    List<PostEntity> getFilteredPostPageByUserId(
+            String userId,
+            List<Long> selectedCategoryIds,
+            List<Long> purchasedSubscriptionIds,
+            Long postId,
+            Integer limit
+    );
 
-    List<PostEntity> getFilteredFollowingPostPageByUserId(Long postId, Integer limit);
+    List<PostEntity> getFilteredFollowingPostPageByUserId(
+            String userId,
+            List<String> followedCreatorIds,
+            List<Long> selectedCategoryIds,
+            List<Long> purchasedSubscriptionIds,
+            Long postId,
+            Integer limit
+    );
 
-    List<PostEntity> getFilteredPostPageByUserAndCreatorIds(String creatorId, Long postId, Integer limit);
+    List<PostEntity> getFilteredPostPageByCreatorId(
+            String creatorId,
+            List<Long> selectedTagIds,
+            List<Long> purchasedSubscriptionIds,
+            Long postId,
+            Integer limit
+    );
 
     List<PostEntity> getPostPageByUserIdAndSearchQuery(String searchQuery, Long postId, Integer limit);
 
-    Optional<PostEntity> getPostByUserAndPostIds(Long postId);
+    Optional<PostEntity> getPostById(Long postId);
 
     Long insertPost(PostRequest postRequest);
 

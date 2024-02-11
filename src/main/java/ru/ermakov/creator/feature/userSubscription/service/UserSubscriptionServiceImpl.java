@@ -34,6 +34,21 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
     }
 
     @Override
+    public List<UserSubscription> getUserSubscriptionsByUserId(String userId) {
+        return userSubscriptionDao.getUserSubscriptionsByUserId(userId)
+                .stream()
+                .map(userSubscriptionEntity ->
+                        new UserSubscription(
+                                userSubscriptionEntity.id(),
+                                subscriptionService.getSubscriptionById(userSubscriptionEntity.subscriptionId()),
+                                userService.getUserById(userSubscriptionEntity.userId()),
+                                userSubscriptionEntity.startDate(),
+                                userSubscriptionEntity.endDate()
+                        )
+                ).toList();
+    }
+
+    @Override
     public List<UserSubscription> getUserSubscriptionsByUserAndCreatorIds(String userId, String creatorId) {
         return userSubscriptionDao.getUserSubscriptionsByUserAndCreatorIds(userId, creatorId)
                 .stream()

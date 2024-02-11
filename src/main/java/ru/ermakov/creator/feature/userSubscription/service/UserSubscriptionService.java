@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface UserSubscriptionService {
 
+    List<UserSubscription> getUserSubscriptionsByUserId(String userId);
+
     List<UserSubscription> getUserSubscriptionsByUserAndCreatorIds(String userId, String creatorId);
 
     Long getSubscriberCountBySubscriptionId(Long subscriptionId);

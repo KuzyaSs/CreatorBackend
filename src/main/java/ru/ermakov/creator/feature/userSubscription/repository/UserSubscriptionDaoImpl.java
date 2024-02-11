@@ -22,6 +22,20 @@ public class UserSubscriptionDaoImpl implements UserSubscriptionDao {
     }
 
     @Override
+    public List<UserSubscriptionEntity> getUserSubscriptionsByUserId(String userId) {
+        String query = """
+                SELECT *
+                FROM user_subscription
+                WHERE user_id = :user_id
+                    AND NOW() BETWEEN start_date AND end_date
+                    """;
+
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource(USER_ID_COLUMN, userId);
+
+        return jdbcTemplate.query(query, sqlParameterSource, new UserSubscriptionRowMapper());
+    }
+
+    @Override
     public List<UserSubscriptionEntity> getUserSubscriptionsByUserAndCreatorIds(String userId, String creatorId) {
         String query = """
                 SELECT *

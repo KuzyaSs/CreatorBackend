@@ -4,10 +4,8 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
-import ru.ermakov.creator.feature.post.model.filter.BlogFilter;
-import ru.ermakov.creator.feature.post.model.filter.FeedFilter;
-import ru.ermakov.creator.feature.post.model.post.PostEntity;
-import ru.ermakov.creator.feature.post.model.post.PostRequest;
+import ru.ermakov.creator.feature.post.model.PostEntity;
+import ru.ermakov.creator.feature.post.model.PostRequest;
 import ru.ermakov.creator.feature.post.repository.mapper.PostRowMapper;
 
 import java.util.List;
@@ -24,27 +22,134 @@ public class PostDaoImpl implements PostDao {
     }
 
     @Override
-    public List<PostEntity> getFilteredPostPageByUserId(Long postId, Integer limit) {
-        return null;
+    public List<PostEntity> getFilteredPostPageByUserId(
+            String userId,
+            List<Long> selectedCategoryIds,
+            List<Long> purchasedSubscriptionIds,
+            Long postId,
+            Integer limit
+    ) {
+        String query = """
+                SELECT DISTINCT ON (p.id) p.id, p.creator_id, p.title, p.content, p.publication_date, p.is_edited
+                FROM post AS p
+                LEFT JOIN post_subscription AS ps ON p.id = ps.post_id
+                WHERE p.id < :id
+                    AND p.creator_id IN (
+                        SELECT user_id
+                        FROM user_category
+                        WHERE (category_id IN :category_id AND is_selected = TRUE) OR :category_flag
+                    )
+                    AND p.creator_id != :user_id
+                    AND (ps.subscription_id IS NULL OR ps.subscription_id IN :subscription_id OR :subscription_flag)
+                ORDER BY p.id DESC
+                LIMIT :limit
+                    """;
+
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
+                .addValue(ID_COLUMN, postId)
+                .addValue(CATEGORY_ID_COLUMN, selectedCategoryIds)
+                .addValue(CATEGORY_FLAG_PARAM, selectedCategoryIds.isEmpty())
+                .addValue(USER_ID_COLUMN, userId)
+                .addValue(SUBSCRIPTION_ID_COLUMN, purchasedSubscriptionIds)
+                .addValue(SUBSCRIPTION_FLAG_PARAM, purchasedSubscriptionIds.isEmpty())
+                .addValue(LIMIT_PARAM, limit);
+
+        return jdbcTemplate.query(query, sqlParameterSource, new PostRowMapper());
     }
 
     @Override
-    public List<PostEntity> getFilteredFollowingPostPageByUserId(Long postId, Integer limit) {
-        return null;
+    public List<PostEntity> getFilteredFollowingPostPageByUserId(
+            String userId,
+            List<String> followedCreatorIds,
+            List<Long> selectedCategoryIds,
+            List<Long> purchasedSubscriptionIds,
+            Long postId,
+            Integer limit
+    ) {
+        String query = """
+                SELECT DISTINCT ON (p.id) p.id, p.creator_id, p.title, p.content, p.publication_date, p.is_edited
+                FROM post AS p
+                LEFT JOIN post_subscription AS ps ON p.id = ps.post_id
+                WHERE p.id < :id
+                    AND p.creator_id IN (
+                        SELECT user_id
+                        FROM user_category
+                        WHERE user_id IN :creator_id
+                            AND ((category_id IN :category_id AND is_selected = TRUE) OR :category_flag)
+                    )
+                    AND p.creator_id != :user_id
+                    AND (ps.subscription_id IS NULL OR ps.subscription_id IN :subscription_id OR :subscription_flag)
+                ORDER BY p.id DESC
+                LIMIT :limit
+                    """;
+
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
+                .addValue(ID_COLUMN, postId)
+                .addValue(CREATOR_ID_COLUMN, followedCreatorIds)
+                .addValue(CATEGORY_ID_COLUMN, selectedCategoryIds)
+                .addValue(CATEGORY_FLAG_PARAM, selectedCategoryIds.isEmpty())
+                .addValue(USER_ID_COLUMN, userId)
+                .addValue(SUBSCRIPTION_ID_COLUMN, purchasedSubscriptionIds)
+                .addValue(SUBSCRIPTION_FLAG_PARAM, purchasedSubscriptionIds.isEmpty())
+                .addValue(LIMIT_PARAM, limit);
+
+        return jdbcTemplate.query(query, sqlParameterSource, new PostRowMapper());
     }
 
     @Override
-    public List<PostEntity> getFilteredPostPageByUserAndCreatorIds(String creatorId, Long postId, Integer limit) {
-        return null;
+    public List<PostEntity> getFilteredPostPageByCreatorId(
+            String creatorId,
+            List<Long> selectedTagIds,
+            List<Long> purchasedSubscriptionIds,
+            Long postId,
+            Integer limit
+    ) {
+        String query = """
+                SELECT DISTINCT ON (p.id) p.id, p.creator_id, p.title, p.content, p.publication_date, p.is_edited
+                FROM post AS p
+                LEFT JOIN post_tag AS pt ON p.id = pt.post_id
+                LEFT JOIN post_subscription AS ps ON p.id = ps.post_id
+                WHERE p.id < :id
+                    AND p.creator_id = :creator_id
+                    AND (pt.tag_id IN :tag_id OR :tag_flag)
+                    AND (ps.subscription_id IS NULL OR ps.subscription_id IN :subscription_id OR :subscription_flag)
+                ORDER BY p.id DESC
+                LIMIT :limit
+                    """;
+
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
+                .addValue(ID_COLUMN, postId)
+                .addValue(CREATOR_ID_COLUMN, creatorId)
+                .addValue(TAG_ID_COLUMN, selectedTagIds)
+                .addValue(TAG_FLAG_PARAM, selectedTagIds.isEmpty())
+                .addValue(SUBSCRIPTION_ID_COLUMN, purchasedSubscriptionIds)
+                .addValue(SUBSCRIPTION_FLAG_PARAM, purchasedSubscriptionIds.isEmpty())
+                .addValue(LIMIT_PARAM, limit);
+
+        return jdbcTemplate.query(query, sqlParameterSource, new PostRowMapper());
     }
 
     @Override
     public List<PostEntity> getPostPageByUserIdAndSearchQuery(String searchQuery, Long postId, Integer limit) {
-        return null;
+        String query = """
+                SELECT *
+                FROM post
+                WHERE id < :id
+                    AND LOWER(title) LIKE LOWER(:search_query)
+                ORDER BY id DESC
+                LIMIT :limit
+                    """;
+
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
+                .addValue(ID_COLUMN, postId)
+                .addValue(SEARCH_QUERY_PARAM, "%" + searchQuery + "%")
+                .addValue(LIMIT_PARAM, limit);
+
+        return jdbcTemplate.query(query, sqlParameterSource, new PostRowMapper());
     }
 
     @Override
-    public Optional<PostEntity> getPostByUserAndPostIds(Long postId) {
+    public Optional<PostEntity> getPostById(Long postId) {
         String query = """
                 SELECT *
                 FROM post

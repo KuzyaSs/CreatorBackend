@@ -2,17 +2,21 @@ package ru.ermakov.creator.feature.post.service;
 
 import org.springframework.stereotype.Service;
 import ru.ermakov.creator.feature.creator.service.CreatorService;
+import ru.ermakov.creator.feature.follow.service.FollowService;
 import ru.ermakov.creator.feature.post.exception.PostNotFoundException;
-import ru.ermakov.creator.feature.post.model.filter.BlogFilter;
-import ru.ermakov.creator.feature.post.model.filter.FeedFilter;
-import ru.ermakov.creator.feature.post.model.like.LikeRequest;
-import ru.ermakov.creator.feature.post.model.post.Post;
-import ru.ermakov.creator.feature.post.model.post.PostEntity;
-import ru.ermakov.creator.feature.post.model.post.PostRequest;
+import ru.ermakov.creator.feature.postLike.model.LikeRequest;
+import ru.ermakov.creator.feature.post.model.Post;
+import ru.ermakov.creator.feature.post.model.PostEntity;
+import ru.ermakov.creator.feature.post.model.PostRequest;
 import ru.ermakov.creator.feature.post.repository.PostDao;
+import ru.ermakov.creator.feature.postImage.service.PostImageService;
+import ru.ermakov.creator.feature.postLike.service.PostLikeService;
+import ru.ermakov.creator.feature.postSubscription.service.PostSubscriptionService;
+import ru.ermakov.creator.feature.postTag.service.PostTagService;
 import ru.ermakov.creator.feature.subscription.model.Subscription;
 import ru.ermakov.creator.feature.userSubscription.service.UserSubscriptionService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,18 +24,19 @@ public class PostServiceImpl implements PostService {
     private final PostDao postDao;
     private final CreatorService creatorService;
     private final UserSubscriptionService userSubscriptionService;
+    private final FollowService followService;
     private final PostImageService postImageService;
     private final PostTagService postTagService;
     private final PostSubscriptionService postSubscriptionService;
     private final PostLikeService postLikeService;
 
-    private static final String ALL_POST_TYPE = "ALL";
     private static final String AVAILABLE_POST_TYPE = "AVAILABLE";
+    private static final Long INVALID_SUBSCRIPTION_ID = -1L;
 
     public PostServiceImpl(
             PostDao postDao,
             CreatorService creatorService,
-            UserSubscriptionService userSubscriptionService, PostImageService postImageService,
+            UserSubscriptionService userSubscriptionService, FollowService followService, PostImageService postImageService,
             PostTagService postTagService,
             PostSubscriptionService postSubscriptionService,
             PostLikeService postLikeService
@@ -39,6 +44,7 @@ public class PostServiceImpl implements PostService {
         this.postDao = postDao;
         this.creatorService = creatorService;
         this.userSubscriptionService = userSubscriptionService;
+        this.followService = followService;
         this.postImageService = postImageService;
         this.postTagService = postTagService;
         this.postSubscriptionService = postSubscriptionService;
@@ -46,8 +52,25 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> getFilteredPostPageByUserId(String userId, FeedFilter feedFilter, Long postId, Integer limit) {
-        return postDao.getFilteredPostPageByUserId(postId, limit)
+    public List<Post> getFilteredPostPageByUserId(
+            String userId,
+            String postType,
+            List<Long> categoryIds,
+            Long postId,
+            Integer limit
+    ) {
+        List<Long> purchasedSubscriptionIds = new ArrayList<>();
+        if (postType.equals(AVAILABLE_POST_TYPE)) {
+            purchasedSubscriptionIds = userSubscriptionService.getUserSubscriptionsByUserId(userId)
+                    .stream()
+                    .map(userSubscription ->
+                            userSubscription.subscription().id()
+                    ).toList();
+            // For the subscription_flag in PostDao to work correctly.
+            purchasedSubscriptionIds.add(INVALID_SUBSCRIPTION_ID);
+        }
+
+        return postDao.getFilteredPostPageByUserId(userId, categoryIds, purchasedSubscriptionIds, postId, limit)
                 .stream()
                 .map(postEntity ->
                         new Post(
@@ -60,62 +83,53 @@ public class PostServiceImpl implements PostService {
                                 postSubscriptionService.getSubscriptionsByPostId(postEntity.id()),
                                 postLikeService.getLikeCountByPostId(postEntity.id()),
                                 postEntity.publicationDate(),
-                                userSubscriptionService.isUserSubscribedBySubscriptionIds(
+                                postEntity.creatorId().equals(userId) || userSubscriptionService.isUserSubscribedBySubscriptionIds(
                                         userId,
                                         postSubscriptionService.getSubscriptionsByPostId(
                                                 postEntity.id()
                                         ).stream().map(Subscription::id).toList()
                                 ),
-                                postLikeService.isLikedPostByUserId(new LikeRequest(userId, postEntity.id())),
+                                postLikeService.isLikedPost(new LikeRequest(userId, postEntity.id())),
                                 postEntity.isEdited()
                         )
                 ).toList();
     }
 
     @Override
-    public List<Post> getFilteredFollowingPostPageByUserId(String userId, FeedFilter feedFilter, Long postId, Integer limit) {
-        return postDao.getFilteredFollowingPostPageByUserId(postId, limit)
+    public List<Post> getFilteredFollowingPostPageByUserId(
+            String userId,
+            String postType,
+            List<Long> categoryIds,
+            Long postId,
+            Integer limit
+    ) {
+        List<String> followedCreatorIds = followService.getFollowsByUserId(userId)
                 .stream()
-                .map(postEntity ->
-                        new Post(
-                                postEntity.id(),
-                                creatorService.getCreatorByUserId(postEntity.creatorId()),
-                                postEntity.title(),
-                                postEntity.content(),
-                                postImageService.getImagesByPostId(postEntity.id()),
-                                postTagService.getTagsByPostId(postEntity.id()),
-                                postSubscriptionService.getSubscriptionsByPostId(postEntity.id()),
-                                postLikeService.getLikeCountByPostId(postEntity.id()),
-                                postEntity.publicationDate(),
-                                userSubscriptionService.isUserSubscribedBySubscriptionIds(
-                                        userId,
-                                        postSubscriptionService.getSubscriptionsByPostId(
-                                                postEntity.id()
-                                        ).stream().map(Subscription::id).toList()
-                                ),
-                                postLikeService.isLikedPostByUserId(new LikeRequest(userId, postEntity.id())),
-                                postEntity.isEdited()
-                        )
-                ).toList();
-    }
-
-    @Override
-    public List<Post> getFilteredPostPageByUserAndCreatorIds(String userId, String creatorId, BlogFilter blogFilter, Long postId, Integer limit) {
-        // Refactor the filter later.
-        return postDao.getFilteredPostPageByUserAndCreatorIds(creatorId, postId, limit)
-                .stream()
-                .filter(postEntity ->
-                        (!postTagService.getTagsByPostId(postEntity.id())
-                                .stream()
-                                .filter(tagId ->
-                                        blogFilter.tags().contains(tagId)
-                                ).toList().isEmpty() || blogFilter.tags().isEmpty()) && (blogFilter.postType().equals(ALL_POST_TYPE) || userSubscriptionService.isUserSubscribedBySubscriptionIds(
-                                userId,
-                                postSubscriptionService.getSubscriptionsByPostId(
-                                        postEntity.id()
-                                ).stream().map(Subscription::id).toList()
-                        ))
+                .map(follow ->
+                        follow.creator().user().id()
                 )
+                .toList();
+
+        List<Long> purchasedSubscriptionIds = new ArrayList<>();
+        if (postType.equals(AVAILABLE_POST_TYPE)) {
+            purchasedSubscriptionIds = userSubscriptionService.getUserSubscriptionsByUserId(userId)
+                    .stream()
+                    .map(userSubscription ->
+                            userSubscription.subscription().id()
+                    ).toList();
+            // For the subscription_flag in PostDao to work correctly.
+            purchasedSubscriptionIds.add(INVALID_SUBSCRIPTION_ID);
+        }
+
+        return postDao.getFilteredFollowingPostPageByUserId(
+                        userId,
+                        followedCreatorIds,
+                        categoryIds,
+                        purchasedSubscriptionIds,
+                        postId,
+                        limit
+                )
+                .stream()
                 .map(postEntity ->
                         new Post(
                                 postEntity.id(),
@@ -127,13 +141,64 @@ public class PostServiceImpl implements PostService {
                                 postSubscriptionService.getSubscriptionsByPostId(postEntity.id()),
                                 postLikeService.getLikeCountByPostId(postEntity.id()),
                                 postEntity.publicationDate(),
-                                userSubscriptionService.isUserSubscribedBySubscriptionIds(
+                                postEntity.creatorId().equals(userId) || userSubscriptionService.isUserSubscribedBySubscriptionIds(
                                         userId,
                                         postSubscriptionService.getSubscriptionsByPostId(
                                                 postEntity.id()
                                         ).stream().map(Subscription::id).toList()
                                 ),
-                                postLikeService.isLikedPostByUserId(new LikeRequest(userId, postEntity.id())),
+                                postLikeService.isLikedPost(new LikeRequest(userId, postEntity.id())),
+                                postEntity.isEdited()
+                        )
+                ).toList();
+    }
+
+    @Override
+    public List<Post> getFilteredPostPageByUserAndCreatorIds(
+            String userId,
+            String creatorId,
+            String postType,
+            List<Long> tagIds,
+            Long postId,
+            Integer limit
+    ) {
+        List<Long> purchasedSubscriptionIds = new ArrayList<>();
+        if (postType.equals(AVAILABLE_POST_TYPE)) {
+            purchasedSubscriptionIds = userSubscriptionService.getUserSubscriptionsByUserAndCreatorIds(userId, creatorId)
+                    .stream()
+                    .map(userSubscription ->
+                            userSubscription.subscription().id()
+                    ).toList();
+            // For the subscription_flag in PostDao to work correctly.
+            purchasedSubscriptionIds.add(INVALID_SUBSCRIPTION_ID);
+        }
+
+        return postDao.getFilteredPostPageByCreatorId(
+                        creatorId,
+                        tagIds,
+                        purchasedSubscriptionIds,
+                        postId,
+                        limit
+                )
+                .stream()
+                .map(postEntity ->
+                        new Post(
+                                postEntity.id(),
+                                creatorService.getCreatorByUserId(postEntity.creatorId()),
+                                postEntity.title(),
+                                postEntity.content(),
+                                postImageService.getImagesByPostId(postEntity.id()),
+                                postTagService.getTagsByPostId(postEntity.id()),
+                                postSubscriptionService.getSubscriptionsByPostId(postEntity.id()),
+                                postLikeService.getLikeCountByPostId(postEntity.id()),
+                                postEntity.publicationDate(),
+                                postEntity.creatorId().equals(userId) || userSubscriptionService.isUserSubscribedBySubscriptionIds(
+                                        userId,
+                                        postSubscriptionService.getSubscriptionsByPostId(
+                                                postEntity.id()
+                                        ).stream().map(Subscription::id).toList()
+                                ),
+                                postLikeService.isLikedPost(new LikeRequest(userId, postEntity.id())),
                                 postEntity.isEdited()
                         )
                 ).toList();
@@ -154,13 +219,13 @@ public class PostServiceImpl implements PostService {
                                 postSubscriptionService.getSubscriptionsByPostId(postEntity.id()),
                                 postLikeService.getLikeCountByPostId(postEntity.id()),
                                 postEntity.publicationDate(),
-                                userSubscriptionService.isUserSubscribedBySubscriptionIds(
+                                postEntity.creatorId().equals(userId) || userSubscriptionService.isUserSubscribedBySubscriptionIds(
                                         userId,
                                         postSubscriptionService.getSubscriptionsByPostId(
                                                 postEntity.id()
                                         ).stream().map(Subscription::id).toList()
                                 ),
-                                postLikeService.isLikedPostByUserId(new LikeRequest(userId, postEntity.id())),
+                                postLikeService.isLikedPost(new LikeRequest(userId, postEntity.id())),
                                 postEntity.isEdited()
                         )
                 ).toList();
@@ -168,7 +233,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Post getPostByUserAndPostIds(String userId, Long postId) {
-        PostEntity postEntity = postDao.getPostByUserAndPostIds(postId).orElseThrow(PostNotFoundException::new);
+        PostEntity postEntity = postDao.getPostById(postId).orElseThrow(PostNotFoundException::new);
         List<Subscription> requiredSubscriptions = postSubscriptionService.getSubscriptionsByPostId(postEntity.id());
 
         return new Post(
@@ -181,11 +246,11 @@ public class PostServiceImpl implements PostService {
                 requiredSubscriptions,
                 postLikeService.getLikeCountByPostId(postEntity.id()),
                 postEntity.publicationDate(),
-                userSubscriptionService.isUserSubscribedBySubscriptionIds(
+                postEntity.creatorId().equals(userId) || userSubscriptionService.isUserSubscribedBySubscriptionIds(
                         userId,
                         requiredSubscriptions.stream().map(Subscription::id).toList()
                 ),
-                postLikeService.isLikedPostByUserId(new LikeRequest(userId, postEntity.id())),
+                postLikeService.isLikedPost(new LikeRequest(userId, postEntity.id())),
                 postEntity.isEdited()
         );
     }
@@ -194,20 +259,30 @@ public class PostServiceImpl implements PostService {
     public void insertPost(PostRequest postRequest) {
         Long postId = postDao.insertPost(postRequest);
         postImageService.insertImagesByPostId(postRequest.imageUrls(), postId);
-        postTagService.insertTagsByPostId(postRequest.tags(), postId);
-        postSubscriptionService.insertSubscriptionsByPostId(postRequest.requiredSubscriptions(), postId);
+        postTagService.insertTagsByPostId(postRequest.tagIds(), postId);
+        postSubscriptionService.insertSubscriptionsByPostId(postRequest.requiredSubscriptionIds(), postId);
     }
 
     @Override
     public void updatePost(Long postId, PostRequest postRequest) {
         postDao.updatePost(postId, postRequest);
         postImageService.insertImagesByPostId(postRequest.imageUrls(), postId);
-        postTagService.insertTagsByPostId(postRequest.tags(), postId);
-        postSubscriptionService.insertSubscriptionsByPostId(postRequest.requiredSubscriptions(), postId);
+        postTagService.insertTagsByPostId(postRequest.tagIds(), postId);
+        postSubscriptionService.insertSubscriptionsByPostId(postRequest.requiredSubscriptionIds(), postId);
     }
 
     @Override
     public void deletePostById(Long postId) {
         postDao.deletePostById(postId);
+    }
+
+    @Override
+    public void insertLikeToPost(LikeRequest likeRequest) {
+        postLikeService.insertLike(likeRequest);
+    }
+
+    @Override
+    public void deleteLikeFromPost(LikeRequest likeRequest) {
+        postLikeService.deleteLike(likeRequest);
     }
 }

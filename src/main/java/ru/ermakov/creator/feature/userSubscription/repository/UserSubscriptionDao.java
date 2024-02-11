@@ -6,6 +6,8 @@ import ru.ermakov.creator.feature.userSubscription.model.UserSubscriptionRequest
 import java.util.List;
 
 public interface UserSubscriptionDao {
+    List<UserSubscriptionEntity> getUserSubscriptionsByUserId(String userId);
+
     List<UserSubscriptionEntity> getUserSubscriptionsByUserAndCreatorIds(String userId, String creatorId);
 
     Long getSubscriberCountBySubscriptionId(Long subscriptionId);
