@@ -7,10 +7,11 @@ import ru.ermakov.creator.feature.transaction.model.UserTransactionRequest;
 import ru.ermakov.creator.feature.transaction.service.TransactionService;
 import ru.ermakov.creator.feature.user.service.UserService;
 import ru.ermakov.creator.feature.userSubscription.exception.DuplicateUserSubscriptionException;
-import ru.ermakov.creator.feature.userSubscription.repository.UserSubscriptionDao;
 import ru.ermakov.creator.feature.userSubscription.model.UserSubscription;
 import ru.ermakov.creator.feature.userSubscription.model.UserSubscriptionRequest;
+import ru.ermakov.creator.feature.userSubscription.repository.UserSubscriptionDao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,6 +22,8 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
     private final TransactionService transactionService;
 
     private static final Long BUY_SUBSCRIPTION_TRANSACTION_ID = 4L;
+
+    private static final Long INVALID_ID = -1L;
 
     public UserSubscriptionServiceImpl(
             UserSubscriptionDao userSubscriptionDao,
@@ -75,7 +78,11 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
 
     @Override
     public Boolean isUserSubscribedBySubscriptionIds(String userId, List<Long> subscriptionIds) {
-        return userSubscriptionDao.isUserSubscribedBySubscriptionIds(userId, subscriptionIds);
+        List<Long> requiredSubscriptionIds = new ArrayList<>(subscriptionIds);
+        // For the UserSubscriptionDao (IN) to work correctly.
+        requiredSubscriptionIds.add(INVALID_ID);
+
+        return userSubscriptionDao.isUserSubscribedBySubscriptionIds(userId, requiredSubscriptionIds);
     }
 
     @Override

@@ -25,7 +25,9 @@ public class PostDaoImpl implements PostDao {
     public List<PostEntity> getFilteredPostPageByUserId(
             String userId,
             List<Long> selectedCategoryIds,
+            Boolean isEverything,
             List<Long> purchasedSubscriptionIds,
+            Boolean isOnlyAllowed,
             Long postId,
             Integer limit
     ) {
@@ -34,13 +36,13 @@ public class PostDaoImpl implements PostDao {
                 FROM post AS p
                 LEFT JOIN post_subscription AS ps ON p.id = ps.post_id
                 WHERE p.id < :id
-                    AND p.creator_id IN (
+                    AND p.creator_id != :user_id
+                    AND (p.creator_id IN (
                         SELECT user_id
                         FROM user_category
-                        WHERE (category_id IN :category_id AND is_selected = TRUE) OR :category_flag
-                    )
-                    AND p.creator_id != :user_id
-                    AND (ps.subscription_id IS NULL OR ps.subscription_id IN :subscription_id OR :subscription_flag)
+                        WHERE category_id IN (:category_id) AND is_selected = TRUE
+                    ) OR :is_everything)
+                    AND (ps.subscription_id IS NULL OR ps.subscription_id IN (:subscription_id) OR NOT :is_only_allowed)
                 ORDER BY p.id DESC
                 LIMIT :limit
                     """;
@@ -48,10 +50,10 @@ public class PostDaoImpl implements PostDao {
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
                 .addValue(ID_COLUMN, postId)
                 .addValue(CATEGORY_ID_COLUMN, selectedCategoryIds)
-                .addValue(CATEGORY_FLAG_PARAM, selectedCategoryIds.isEmpty())
+                .addValue(IS_EVERYTHING_PARAM, isEverything)
                 .addValue(USER_ID_COLUMN, userId)
                 .addValue(SUBSCRIPTION_ID_COLUMN, purchasedSubscriptionIds)
-                .addValue(SUBSCRIPTION_FLAG_PARAM, purchasedSubscriptionIds.isEmpty())
+                .addValue(IS_ONLY_ALLOWED_PARAM, isOnlyAllowed)
                 .addValue(LIMIT_PARAM, limit);
 
         return jdbcTemplate.query(query, sqlParameterSource, new PostRowMapper());
@@ -62,7 +64,9 @@ public class PostDaoImpl implements PostDao {
             String userId,
             List<String> followedCreatorIds,
             List<Long> selectedCategoryIds,
+            Boolean isEverything,
             List<Long> purchasedSubscriptionIds,
+            Boolean isOnlyAllowed,
             Long postId,
             Integer limit
     ) {
@@ -71,14 +75,14 @@ public class PostDaoImpl implements PostDao {
                 FROM post AS p
                 LEFT JOIN post_subscription AS ps ON p.id = ps.post_id
                 WHERE p.id < :id
-                    AND p.creator_id IN (
+                    AND p.creator_id IN (:creator_id)
+                    AND p.creator_id != :user_id
+                    AND (p.creator_id IN (
                         SELECT user_id
                         FROM user_category
-                        WHERE user_id IN :creator_id
-                            AND ((category_id IN :category_id AND is_selected = TRUE) OR :category_flag)
-                    )
-                    AND p.creator_id != :user_id
-                    AND (ps.subscription_id IS NULL OR ps.subscription_id IN :subscription_id OR :subscription_flag)
+                        WHERE category_id IN (:category_id) AND is_selected = TRUE
+                    ) OR :is_everything)
+                    AND (ps.subscription_id IS NULL OR ps.subscription_id IN (:subscription_id) OR NOT :is_only_allowed)
                 ORDER BY p.id DESC
                 LIMIT :limit
                     """;
@@ -87,10 +91,10 @@ public class PostDaoImpl implements PostDao {
                 .addValue(ID_COLUMN, postId)
                 .addValue(CREATOR_ID_COLUMN, followedCreatorIds)
                 .addValue(CATEGORY_ID_COLUMN, selectedCategoryIds)
-                .addValue(CATEGORY_FLAG_PARAM, selectedCategoryIds.isEmpty())
+                .addValue(IS_EVERYTHING_PARAM, isEverything)
                 .addValue(USER_ID_COLUMN, userId)
                 .addValue(SUBSCRIPTION_ID_COLUMN, purchasedSubscriptionIds)
-                .addValue(SUBSCRIPTION_FLAG_PARAM, purchasedSubscriptionIds.isEmpty())
+                .addValue(IS_ONLY_ALLOWED_PARAM, isOnlyAllowed)
                 .addValue(LIMIT_PARAM, limit);
 
         return jdbcTemplate.query(query, sqlParameterSource, new PostRowMapper());
@@ -100,7 +104,9 @@ public class PostDaoImpl implements PostDao {
     public List<PostEntity> getFilteredPostPageByCreatorId(
             String creatorId,
             List<Long> selectedTagIds,
+            Boolean isEverything,
             List<Long> purchasedSubscriptionIds,
+            Boolean isOnlyAllowed,
             Long postId,
             Integer limit
     ) {
@@ -111,8 +117,8 @@ public class PostDaoImpl implements PostDao {
                 LEFT JOIN post_subscription AS ps ON p.id = ps.post_id
                 WHERE p.id < :id
                     AND p.creator_id = :creator_id
-                    AND (pt.tag_id IN :tag_id OR :tag_flag)
-                    AND (ps.subscription_id IS NULL OR ps.subscription_id IN :subscription_id OR :subscription_flag)
+                    AND (pt.tag_id IN (:tag_id) OR :is_everything)
+                    AND (ps.subscription_id IS NULL OR ps.subscription_id IN (:subscription_id) OR NOT :is_only_allowed)
                 ORDER BY p.id DESC
                 LIMIT :limit
                     """;
@@ -121,9 +127,9 @@ public class PostDaoImpl implements PostDao {
                 .addValue(ID_COLUMN, postId)
                 .addValue(CREATOR_ID_COLUMN, creatorId)
                 .addValue(TAG_ID_COLUMN, selectedTagIds)
-                .addValue(TAG_FLAG_PARAM, selectedTagIds.isEmpty())
+                .addValue(IS_EVERYTHING_PARAM, isEverything)
                 .addValue(SUBSCRIPTION_ID_COLUMN, purchasedSubscriptionIds)
-                .addValue(SUBSCRIPTION_FLAG_PARAM, purchasedSubscriptionIds.isEmpty())
+                .addValue(IS_ONLY_ALLOWED_PARAM, isOnlyAllowed)
                 .addValue(LIMIT_PARAM, limit);
 
         return jdbcTemplate.query(query, sqlParameterSource, new PostRowMapper());

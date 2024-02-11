@@ -10,7 +10,9 @@ public interface PostDao {
     List<PostEntity> getFilteredPostPageByUserId(
             String userId,
             List<Long> selectedCategoryIds,
+            Boolean isEverything,
             List<Long> purchasedSubscriptionIds,
+            Boolean isAvailable,
             Long postId,
             Integer limit
     );
@@ -19,7 +21,9 @@ public interface PostDao {
             String userId,
             List<String> followedCreatorIds,
             List<Long> selectedCategoryIds,
+            Boolean isEverything,
             List<Long> purchasedSubscriptionIds,
+            Boolean isOnlyAllowed,
             Long postId,
             Integer limit
     );
@@ -27,7 +31,9 @@ public interface PostDao {
     List<PostEntity> getFilteredPostPageByCreatorId(
             String creatorId,
             List<Long> selectedTagIds,
+            Boolean isEverything,
             List<Long> purchasedSubscriptionIds,
+            Boolean isOnlyAllowed,
             Long postId,
             Integer limit
     );

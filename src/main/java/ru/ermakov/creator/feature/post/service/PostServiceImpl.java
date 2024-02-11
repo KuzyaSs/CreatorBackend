@@ -31,7 +31,7 @@ public class PostServiceImpl implements PostService {
     private final PostLikeService postLikeService;
 
     private static final String AVAILABLE_POST_TYPE = "AVAILABLE";
-    private static final Long INVALID_SUBSCRIPTION_ID = -1L;
+    private static final Long INVALID_ID = -1L;
 
     public PostServiceImpl(
             PostDao postDao,
@@ -59,18 +59,31 @@ public class PostServiceImpl implements PostService {
             Long postId,
             Integer limit
     ) {
+        List<Long> selectedCategoryIds = new ArrayList<>(categoryIds);
+        // For the PostDao (IN) to work correctly.
+        selectedCategoryIds.add(INVALID_ID);
+
         List<Long> purchasedSubscriptionIds = new ArrayList<>();
+        // For the PostDao (IN) to work correctly.
+        purchasedSubscriptionIds.add(INVALID_ID);
+
         if (postType.equals(AVAILABLE_POST_TYPE)) {
-            purchasedSubscriptionIds = userSubscriptionService.getUserSubscriptionsByUserId(userId)
+            purchasedSubscriptionIds.addAll(userSubscriptionService.getUserSubscriptionsByUserId(userId)
                     .stream()
                     .map(userSubscription ->
                             userSubscription.subscription().id()
-                    ).toList();
-            // For the subscription_flag in PostDao to work correctly.
-            purchasedSubscriptionIds.add(INVALID_SUBSCRIPTION_ID);
+                    ).toList());
         }
 
-        return postDao.getFilteredPostPageByUserId(userId, categoryIds, purchasedSubscriptionIds, postId, limit)
+        return postDao.getFilteredPostPageByUserId(
+                        userId,
+                        selectedCategoryIds,
+                        categoryIds.isEmpty(),
+                        purchasedSubscriptionIds,
+                        postType.equals(AVAILABLE_POST_TYPE),
+                        postId,
+                        limit
+                )
                 .stream()
                 .map(postEntity ->
                         new Post(
@@ -103,29 +116,38 @@ public class PostServiceImpl implements PostService {
             Long postId,
             Integer limit
     ) {
-        List<String> followedCreatorIds = followService.getFollowsByUserId(userId)
+        List<String> followedCreatorIds = new ArrayList<>(followService.getFollowsByUserId(userId)
                 .stream()
                 .map(follow ->
                         follow.creator().user().id()
                 )
-                .toList();
+                .toList());
+        // For the PostDao (IN) to work correctly.
+        followedCreatorIds.add(INVALID_ID.toString());
+
+        List<Long> selectedCategoryIds = new ArrayList<>(categoryIds);
+        // For the PostDao (IN) to work correctly.
+        selectedCategoryIds.add(INVALID_ID);
 
         List<Long> purchasedSubscriptionIds = new ArrayList<>();
+        // For the PostDao (IN) to work correctly.
+        purchasedSubscriptionIds.add(INVALID_ID);
+
         if (postType.equals(AVAILABLE_POST_TYPE)) {
-            purchasedSubscriptionIds = userSubscriptionService.getUserSubscriptionsByUserId(userId)
+            purchasedSubscriptionIds.addAll(userSubscriptionService.getUserSubscriptionsByUserId(userId)
                     .stream()
                     .map(userSubscription ->
                             userSubscription.subscription().id()
-                    ).toList();
-            // For the subscription_flag in PostDao to work correctly.
-            purchasedSubscriptionIds.add(INVALID_SUBSCRIPTION_ID);
+                    ).toList());
         }
 
         return postDao.getFilteredFollowingPostPageByUserId(
                         userId,
                         followedCreatorIds,
-                        categoryIds,
+                        selectedCategoryIds,
+                        categoryIds.isEmpty(),
                         purchasedSubscriptionIds,
+                        postType.equals(AVAILABLE_POST_TYPE),
                         postId,
                         limit
                 )
@@ -162,21 +184,28 @@ public class PostServiceImpl implements PostService {
             Long postId,
             Integer limit
     ) {
+        List<Long> selectedTagIds = new ArrayList<>(tagIds);
+        // For the PostDao (IN) to work correctly.
+        selectedTagIds.add(INVALID_ID);
+
         List<Long> purchasedSubscriptionIds = new ArrayList<>();
+        // For the PostDao (IN) to work correctly.
+        purchasedSubscriptionIds.add(INVALID_ID);
+
         if (postType.equals(AVAILABLE_POST_TYPE)) {
-            purchasedSubscriptionIds = userSubscriptionService.getUserSubscriptionsByUserAndCreatorIds(userId, creatorId)
+            purchasedSubscriptionIds.addAll(userSubscriptionService.getUserSubscriptionsByUserId(userId)
                     .stream()
                     .map(userSubscription ->
                             userSubscription.subscription().id()
-                    ).toList();
-            // For the subscription_flag in PostDao to work correctly.
-            purchasedSubscriptionIds.add(INVALID_SUBSCRIPTION_ID);
+                    ).toList());
         }
 
         return postDao.getFilteredPostPageByCreatorId(
                         creatorId,
-                        tagIds,
+                        selectedTagIds,
+                        tagIds.isEmpty(),
                         purchasedSubscriptionIds,
+                        postType.equals(AVAILABLE_POST_TYPE),
                         postId,
                         limit
                 )

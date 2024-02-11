@@ -40,8 +40,7 @@ public final class ParamNameConstants {
 
     public static final String LIMIT_PARAM = "limit";
     public static final String OFFSET_PARAM = "offset";
-    public static final String TAG_FLAG_PARAM = "tag_flag";
-    public static final String CATEGORY_FLAG_PARAM = "category_flag";
-    public static final String SUBSCRIPTION_FLAG_PARAM = "subscription_flag";
+    public static final String IS_EVERYTHING_PARAM = "is_everything";
+    public static final String IS_ONLY_ALLOWED_PARAM = "is_only_allowed";
     public static final String SEARCH_QUERY_PARAM = "search_query";
 }

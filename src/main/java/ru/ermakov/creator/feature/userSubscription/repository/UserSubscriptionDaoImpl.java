@@ -92,7 +92,7 @@ public class UserSubscriptionDaoImpl implements UserSubscriptionDao {
                     SELECT 1
                     FROM user_subscription
                     WHERE user_id = :user_id
-                        AND subscription_id IN :subscription_id
+                        AND subscription_id IN (:subscription_id)
                         AND NOW() BETWEEN start_date AND end_date
                 )
                     """;
