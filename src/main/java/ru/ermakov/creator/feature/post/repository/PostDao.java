@@ -9,6 +9,7 @@ import java.util.Optional;
 public interface PostDao {
     List<PostEntity> getFilteredPostPageByUserId(
             String userId,
+            List<String> followedCreatorIds,
             List<Long> selectedCategoryIds,
             Boolean isEverything,
             List<Long> purchasedSubscriptionIds,

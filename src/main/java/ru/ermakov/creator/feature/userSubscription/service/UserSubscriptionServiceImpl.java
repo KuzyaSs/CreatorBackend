@@ -78,6 +78,10 @@ public class UserSubscriptionServiceImpl implements UserSubscriptionService {
 
     @Override
     public Boolean isUserSubscribedBySubscriptionIds(String userId, List<Long> subscriptionIds) {
+        if (subscriptionIds.isEmpty() || subscriptionIds.size() == 1 && subscriptionIds.get(0).equals(INVALID_ID)) {
+            return true;
+        }
+
         List<Long> requiredSubscriptionIds = new ArrayList<>(subscriptionIds);
         // For the UserSubscriptionDao (IN) to work correctly.
         requiredSubscriptionIds.add(INVALID_ID);

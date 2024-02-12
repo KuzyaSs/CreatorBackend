@@ -24,6 +24,7 @@ public class PostDaoImpl implements PostDao {
     @Override
     public List<PostEntity> getFilteredPostPageByUserId(
             String userId,
+            List<String> followedCreatorIds,
             List<Long> selectedCategoryIds,
             Boolean isEverything,
             List<Long> purchasedSubscriptionIds,
@@ -36,6 +37,7 @@ public class PostDaoImpl implements PostDao {
                 FROM post AS p
                 LEFT JOIN post_subscription AS ps ON p.id = ps.post_id
                 WHERE p.id < :id
+                    AND p.creator_id NOT IN (:creator_id)
                     AND p.creator_id != :user_id
                     AND (p.creator_id IN (
                         SELECT user_id
@@ -49,6 +51,7 @@ public class PostDaoImpl implements PostDao {
 
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
                 .addValue(ID_COLUMN, postId)
+                .addValue(CREATOR_ID_COLUMN, followedCreatorIds)
                 .addValue(CATEGORY_ID_COLUMN, selectedCategoryIds)
                 .addValue(IS_EVERYTHING_PARAM, isEverything)
                 .addValue(USER_ID_COLUMN, userId)
@@ -159,7 +162,7 @@ public class PostDaoImpl implements PostDao {
         String query = """
                 SELECT *
                 FROM post
-                WHERE post_id = :post_id
+                WHERE id = :id
                     """;
 
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource(ID_COLUMN, postId);

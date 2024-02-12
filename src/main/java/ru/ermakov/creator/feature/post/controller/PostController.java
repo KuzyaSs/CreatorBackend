@@ -42,7 +42,7 @@ public class PostController {
     @GetMapping("creators/{creatorId}")
     List<Post> getFilteredPostPageByUserAndCreatorIds(
             @RequestParam String userId,
-            @PathVariable(name = "{creatorId}") String creatorId,
+            @PathVariable(name = "creatorId") String creatorId,
             @RequestParam String postType,
             @RequestParam List<Long> tagIds,
             @RequestParam Long postId,

@@ -59,6 +59,15 @@ public class PostServiceImpl implements PostService {
             Long postId,
             Integer limit
     ) {
+        List<String> followedCreatorIds = new ArrayList<>(followService.getFollowsByUserId(userId)
+                .stream()
+                .map(follow ->
+                        follow.creator().user().id()
+                )
+                .toList());
+        // For the PostDao (IN) to work correctly.
+        followedCreatorIds.add(INVALID_ID.toString());
+
         List<Long> selectedCategoryIds = new ArrayList<>(categoryIds);
         // For the PostDao (IN) to work correctly.
         selectedCategoryIds.add(INVALID_ID);
@@ -77,6 +86,7 @@ public class PostServiceImpl implements PostService {
 
         return postDao.getFilteredPostPageByUserId(
                         userId,
+                        followedCreatorIds,
                         selectedCategoryIds,
                         categoryIds.isEmpty(),
                         purchasedSubscriptionIds,
@@ -205,7 +215,7 @@ public class PostServiceImpl implements PostService {
                         selectedTagIds,
                         tagIds.isEmpty(),
                         purchasedSubscriptionIds,
-                        postType.equals(AVAILABLE_POST_TYPE),
+                        postType.equals(AVAILABLE_POST_TYPE) && !creatorId.equals(userId),
                         postId,
                         limit
                 )
