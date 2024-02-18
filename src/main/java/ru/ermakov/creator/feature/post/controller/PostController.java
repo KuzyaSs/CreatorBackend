@@ -21,7 +21,7 @@ public class PostController {
     List<Post> getFilteredPostPageByUserId(
             @RequestParam String userId,
             @RequestParam String postType,
-            @RequestParam List<Long> categoryIds,
+            @RequestParam(required = false, defaultValue = "") List<Long> categoryIds,
             @RequestParam Long postId,
             @RequestParam Integer limit
     ) {
@@ -32,7 +32,7 @@ public class PostController {
     List<Post> getFilteredFollowingPostPageByUserId(
             @RequestParam String userId,
             @RequestParam String postType,
-            @RequestParam List<Long> categoryIds,
+            @RequestParam(required = false, defaultValue = "") List<Long> categoryIds,
             @RequestParam Long postId,
             @RequestParam Integer limit
     ) {
@@ -44,7 +44,7 @@ public class PostController {
             @RequestParam String userId,
             @PathVariable(name = "creatorId") String creatorId,
             @RequestParam String postType,
-            @RequestParam List<Long> tagIds,
+            @RequestParam(required = false, defaultValue = "") List<Long> tagIds,
             @RequestParam Long postId,
             @RequestParam Integer limit
     ) {
@@ -86,8 +86,8 @@ public class PostController {
         postService.insertLikeToPost(likeRequest);
     }
 
-    @DeleteMapping("likes")
-    void deleteLikeFromPost(@RequestBody LikeRequest likeRequest) {
-        postService.deleteLikeFromPost(likeRequest);
+    @DeleteMapping("{postId}/likes")
+    void deleteLikeFromPost(@PathVariable(name = "postId") Long postId, @RequestParam String userId) {
+        postService.deleteLikeFromPost(postId, userId);
     }
 }

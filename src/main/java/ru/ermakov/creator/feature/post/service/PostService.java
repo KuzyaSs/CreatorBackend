@@ -48,5 +48,5 @@ public interface PostService {
 
     void insertLikeToPost(LikeRequest likeRequest);
 
-    void deleteLikeFromPost(LikeRequest likeRequest);
+    void deleteLikeFromPost(Long postId, String userId);
 }

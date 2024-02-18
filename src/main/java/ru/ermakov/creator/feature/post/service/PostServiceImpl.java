@@ -32,6 +32,7 @@ public class PostServiceImpl implements PostService {
 
     private static final String AVAILABLE_POST_TYPE = "AVAILABLE";
     private static final Long INVALID_ID = -1L;
+    private static final Long COMMENT_COUNT = 0L;
 
     public PostServiceImpl(
             PostDao postDao,
@@ -105,6 +106,7 @@ public class PostServiceImpl implements PostService {
                                 postTagService.getTagsByPostId(postEntity.id()),
                                 postSubscriptionService.getSubscriptionsByPostId(postEntity.id()),
                                 postLikeService.getLikeCountByPostId(postEntity.id()),
+                                COMMENT_COUNT,
                                 postEntity.publicationDate(),
                                 postEntity.creatorId().equals(userId) || userSubscriptionService.isUserSubscribedBySubscriptionIds(
                                         userId,
@@ -172,6 +174,7 @@ public class PostServiceImpl implements PostService {
                                 postTagService.getTagsByPostId(postEntity.id()),
                                 postSubscriptionService.getSubscriptionsByPostId(postEntity.id()),
                                 postLikeService.getLikeCountByPostId(postEntity.id()),
+                                COMMENT_COUNT,
                                 postEntity.publicationDate(),
                                 postEntity.creatorId().equals(userId) || userSubscriptionService.isUserSubscribedBySubscriptionIds(
                                         userId,
@@ -230,6 +233,7 @@ public class PostServiceImpl implements PostService {
                                 postTagService.getTagsByPostId(postEntity.id()),
                                 postSubscriptionService.getSubscriptionsByPostId(postEntity.id()),
                                 postLikeService.getLikeCountByPostId(postEntity.id()),
+                                COMMENT_COUNT,
                                 postEntity.publicationDate(),
                                 postEntity.creatorId().equals(userId) || userSubscriptionService.isUserSubscribedBySubscriptionIds(
                                         userId,
@@ -257,6 +261,7 @@ public class PostServiceImpl implements PostService {
                                 postTagService.getTagsByPostId(postEntity.id()),
                                 postSubscriptionService.getSubscriptionsByPostId(postEntity.id()),
                                 postLikeService.getLikeCountByPostId(postEntity.id()),
+                                COMMENT_COUNT,
                                 postEntity.publicationDate(),
                                 postEntity.creatorId().equals(userId) || userSubscriptionService.isUserSubscribedBySubscriptionIds(
                                         userId,
@@ -284,6 +289,7 @@ public class PostServiceImpl implements PostService {
                 postTagService.getTagsByPostId(postEntity.id()),
                 requiredSubscriptions,
                 postLikeService.getLikeCountByPostId(postEntity.id()),
+                COMMENT_COUNT,
                 postEntity.publicationDate(),
                 postEntity.creatorId().equals(userId) || userSubscriptionService.isUserSubscribedBySubscriptionIds(
                         userId,
@@ -321,7 +327,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void deleteLikeFromPost(LikeRequest likeRequest) {
+    public void deleteLikeFromPost(Long postId, String userId) {
+        LikeRequest likeRequest = new LikeRequest(userId, postId);
         postLikeService.deleteLike(likeRequest);
     }
 }

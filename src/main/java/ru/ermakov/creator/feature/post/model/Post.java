@@ -17,6 +17,7 @@ public record Post(
         List<Tag> tags,
         List<Subscription> requiredSubscriptions,
         Long likeCount,
+        Long commentCount,
         Timestamp publicationDate,
         Boolean isAvailable,
         Boolean isLiked,
