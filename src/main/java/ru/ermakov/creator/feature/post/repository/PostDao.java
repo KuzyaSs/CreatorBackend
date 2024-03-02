@@ -43,6 +43,8 @@ public interface PostDao {
 
     Optional<PostEntity> getPostById(Long postId);
 
+    Long getPostCountByCreatorId(String creatorId);
+
     Long insertPost(PostRequest postRequest);
 
     void updatePost(Long postId, PostRequest postRequest);

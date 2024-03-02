@@ -40,13 +40,11 @@ public interface PostService {
 
     Post getPostByUserAndPostIds(String userId, Long postId);
 
+    Long getPostCountByCreatorId(String creatorId);
+
     void insertPost(PostRequest postRequest);
 
     void updatePost(Long postId, PostRequest postRequest);
 
     void deletePostById(Long postId);
-
-    void insertLikeToPost(LikeRequest likeRequest);
-
-    void deleteLikeFromPost(Long postId, String userId);
 }

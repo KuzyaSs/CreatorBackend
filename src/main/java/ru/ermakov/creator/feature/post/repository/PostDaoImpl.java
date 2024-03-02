@@ -173,6 +173,19 @@ public class PostDaoImpl implements PostDao {
     }
 
     @Override
+    public Long getPostCountByCreatorId(String creatorId) {
+        String query = """
+                SELECT COUNT(*)
+                FROM post
+                WHERE creator_id = :creator_id
+                    """;
+
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource(CREATOR_ID_COLUMN, creatorId);
+
+        return jdbcTemplate.queryForObject(query, sqlParameterSource, Long.class);
+    }
+
+    @Override
     public Long insertPost(PostRequest postRequest) {
         String query = """
                 INSERT INTO post (creator_id, title, content)

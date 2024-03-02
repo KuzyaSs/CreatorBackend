@@ -1,7 +1,6 @@
 package ru.ermakov.creator.feature.post.controller;
 
 import org.springframework.web.bind.annotation.*;
-import ru.ermakov.creator.feature.postLike.model.LikeRequest;
 import ru.ermakov.creator.feature.post.model.Post;
 import ru.ermakov.creator.feature.post.model.PostRequest;
 import ru.ermakov.creator.feature.post.service.PostService;
@@ -79,15 +78,5 @@ public class PostController {
     @DeleteMapping("{postId}")
     void deletePostById(@PathVariable(name = "postId") Long postId) {
         postService.deletePostById(postId);
-    }
-
-    @PostMapping("likes")
-    void insertLikeToPost(@RequestBody LikeRequest likeRequest) {
-        postService.insertLikeToPost(likeRequest);
-    }
-
-    @DeleteMapping("{postId}/likes")
-    void deleteLikeFromPost(@PathVariable(name = "postId") Long postId, @RequestParam String userId) {
-        postService.deleteLikeFromPost(postId, userId);
     }
 }

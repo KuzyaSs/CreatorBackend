@@ -34,6 +34,7 @@ public final class ParamNameConstants {
     public static final String TAG_ID_COLUMN = "tag_id";
     public static final String URL_COLUMN = "url";
     public static final String CONTENT_COLUMN = "content";
+    public static final String REPLY_COMMENT_ID_COLUMN = "reply_comment_id";
     public static final String PUBLICATION_DATE_COLUMN = "publication_date";
     public static final String IS_EDITED_COLUMN = "is_edited";
 

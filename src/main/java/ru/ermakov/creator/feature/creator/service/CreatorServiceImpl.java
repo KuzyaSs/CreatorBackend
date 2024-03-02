@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.ermakov.creator.feature.category.service.CategoryService;
 import ru.ermakov.creator.feature.creator.model.Creator;
 import ru.ermakov.creator.feature.follow.repository.FollowDao;
+import ru.ermakov.creator.feature.post.repository.PostDao;
 import ru.ermakov.creator.feature.user.service.UserService;
 import ru.ermakov.creator.feature.userSubscription.repository.UserSubscriptionDao;
 
@@ -15,13 +16,20 @@ public class CreatorServiceImpl implements CreatorService {
     private final CategoryService categoryService;
     private final FollowDao followDao;
     private final UserSubscriptionDao userSubscriptionDao;
-    // private final PostService postService;
+    private final PostDao postDao;
 
-    public CreatorServiceImpl(UserService userService, CategoryService categoryService, FollowDao followDao, UserSubscriptionDao userSubscriptionDao) {
+    public CreatorServiceImpl(
+            UserService userService,
+            CategoryService categoryService,
+            FollowDao followDao,
+            UserSubscriptionDao userSubscriptionDao,
+            PostDao postDao
+    ) {
         this.userService = userService;
         this.categoryService = categoryService;
         this.followDao = followDao;
         this.userSubscriptionDao = userSubscriptionDao;
+        this.postDao = postDao;
     }
 
     @Override
@@ -40,7 +48,7 @@ public class CreatorServiceImpl implements CreatorService {
                 categoryService.getCategoriesByUserId(userId),
                 followDao.getFollowerCountByUserId(userId),
                 userSubscriptionDao.getSubscriberCountByCreatorId(userId),
-                0L // postService.getPostCountByUserId(userId)
+                postDao.getPostCountByCreatorId(userId)
         );
     }
 }
