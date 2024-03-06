@@ -1,21 +1,26 @@
 package ru.ermakov.creator.feature.postComment.repository;
 
 import ru.ermakov.creator.feature.postComment.model.PostCommentEntity;
-import ru.ermakov.creator.feature.postComment.model.CommentRequest;
+import ru.ermakov.creator.feature.postComment.model.PostCommentRequest;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface PostCommentDao {
-    List<PostCommentEntity> getCommentPageByPostId(Long postId, Long replyCommentId, Long commentId, Integer limit);
+    List<PostCommentEntity> getPostCommentPageByPostId(
+            Long postId,
+            Long replyCommentId,
+            Long postCommentId,
+            Integer limit
+    );
 
-    Optional<PostCommentEntity> getCommentById(Long commentId);
+    Optional<PostCommentEntity> getPostCommentById(Long commentId);
 
-    Long getCommentCountByPostId(Long postId);
+    Long getPostCommentCountByPostId(Long postId);
 
-    void insertComment(CommentRequest commentRequest);
+    void insertPostComment(PostCommentRequest postCommentRequest);
 
-    void updateComment(Long commentId, CommentRequest commentRequest);
+    void updatePostComment(Long postCommentId, PostCommentRequest postCommentRequest);
 
-    void deleteCommentById(Long commentId);
+    void deletePostCommentById(Long postCommentId);
 }

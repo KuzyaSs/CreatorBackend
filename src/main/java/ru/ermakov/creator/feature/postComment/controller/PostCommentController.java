@@ -1,8 +1,8 @@
 package ru.ermakov.creator.feature.postComment.controller;
 
 import org.springframework.web.bind.annotation.*;
-import ru.ermakov.creator.feature.postComment.model.Comment;
-import ru.ermakov.creator.feature.postComment.model.CommentRequest;
+import ru.ermakov.creator.feature.postComment.model.PostComment;
+import ru.ermakov.creator.feature.postComment.model.PostCommentRequest;
 import ru.ermakov.creator.feature.postComment.service.PostCommentService;
 
 import java.util.List;
@@ -17,32 +17,39 @@ public class PostCommentController {
     }
 
     @GetMapping("{postId}/comments")
-    List<Comment> getCommentPageByPostId(
+    List<PostComment> getPostCommentPageByPostAndUserId(
             @PathVariable(name = "postId") Long postId,
+            @RequestParam("userId") String userId,
             @RequestParam(required = false, defaultValue = "-1") Long replyCommentId,
             @RequestParam Long commentId,
             @RequestParam Integer limit
     ) {
-        return postCommentService.getCommentPageByPostId(postId, replyCommentId, commentId, limit);
+        return postCommentService.getPostCommentPageByPostAndUserIds(postId, userId, replyCommentId, commentId, limit);
     }
 
-    @GetMapping("comments/{commentId}")
-    Comment getCommentById(@PathVariable(name = "commentId") Long commentId) {
-        return postCommentService.getCommentById(commentId);
+    @GetMapping("comments/{postCommentId}")
+    PostComment getPostCommentByCommentAndUserIds(
+            @PathVariable(name = "commentId") Long postCommentId,
+            @RequestParam("userId") String userId
+    ) {
+        return postCommentService.getPostCommentByCommentAndUserIds(postCommentId, userId);
     }
 
     @PostMapping("comments")
-    void insertComment(@RequestBody CommentRequest commentRequest) {
-        postCommentService.insertComment(commentRequest);
+    void insertPostComment(@RequestBody PostCommentRequest postCommentRequest) {
+        postCommentService.insertPostComment(postCommentRequest);
     }
 
-    @PutMapping("comments/{commentId}")
-    void updateComment(@PathVariable(name = "commentId") Long commentId, @RequestBody CommentRequest commentRequest) {
-        postCommentService.updateComment(commentId, commentRequest);
+    @PutMapping("comments/{postCommentId}")
+    void updatePostComment(
+            @PathVariable(name = "postCommentId") Long postCommentId,
+            @RequestBody PostCommentRequest postCommentRequest
+    ) {
+        postCommentService.updatePostComment(postCommentId, postCommentRequest);
     }
 
-    @DeleteMapping("comments/{commentId}")
-    void deleteCommentById(@PathVariable(name = "commentId") Long commentId) {
-        postCommentService.deleteCommentById(commentId);
+    @DeleteMapping("comments/{postCommentId}")
+    void deletePostCommentById(@PathVariable(name = "postCommentId") Long postCommentId) {
+        postCommentService.deletePostCommentById(postCommentId);
     }
 }

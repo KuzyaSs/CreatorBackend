@@ -1,21 +1,26 @@
 package ru.ermakov.creator.feature.postComment.service;
 
-import ru.ermakov.creator.feature.postComment.model.Comment;
-import ru.ermakov.creator.feature.postComment.model.CommentRequest;
-import ru.ermakov.creator.feature.postComment.model.PostCommentEntity;
+import ru.ermakov.creator.feature.postComment.model.PostComment;
+import ru.ermakov.creator.feature.postComment.model.PostCommentRequest;
 
 import java.util.List;
 
 public interface PostCommentService {
-    List<Comment> getCommentPageByPostId(Long postId, Long replyCommentId, Long commentId, Integer limit);
+    List<PostComment> getPostCommentPageByPostAndUserIds(
+            Long postId,
+            String userId,
+            Long replyCommentId,
+            Long commentId,
+            Integer limit
+    );
 
-    Comment getCommentById(Long commentId);
+    PostComment getPostCommentByCommentAndUserIds(Long postCommentId, String userId);
 
-    Long getCommentCountByPostId(Long postId);
+    Long getPostCommentCountByPostId(Long postId);
 
-    void insertComment(CommentRequest commentRequest);
+    void insertPostComment(PostCommentRequest postCommentRequest);
 
-    void updateComment(Long commentId, CommentRequest commentRequest);
+    void updatePostComment(Long postCommentId, PostCommentRequest postCommentRequest);
 
-    void deleteCommentById(Long commentId);
+    void deletePostCommentById(Long postCommentId);
 }

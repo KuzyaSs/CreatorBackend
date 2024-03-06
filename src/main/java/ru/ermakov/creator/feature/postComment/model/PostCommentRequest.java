@@ -1,6 +1,6 @@
 package ru.ermakov.creator.feature.postComment.model;
 
-public record CommentRequest(
+public record PostCommentRequest(
         String userId,
         Long postId,
         Long replyCommentId,

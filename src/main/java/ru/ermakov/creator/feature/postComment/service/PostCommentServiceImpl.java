@@ -2,10 +2,12 @@ package ru.ermakov.creator.feature.postComment.service;
 
 import org.springframework.stereotype.Service;
 import ru.ermakov.creator.feature.postComment.exception.CommentNotFoundException;
-import ru.ermakov.creator.feature.postComment.model.Comment;
-import ru.ermakov.creator.feature.postComment.model.CommentRequest;
+import ru.ermakov.creator.feature.postComment.model.PostComment;
+import ru.ermakov.creator.feature.postComment.model.PostCommentRequest;
 import ru.ermakov.creator.feature.postComment.model.PostCommentEntity;
 import ru.ermakov.creator.feature.postComment.repository.PostCommentDao;
+import ru.ermakov.creator.feature.postCommentLike.model.PostCommentLikeRequest;
+import ru.ermakov.creator.feature.postCommentLike.service.PostCommentLikeService;
 import ru.ermakov.creator.feature.user.service.UserService;
 
 import java.util.List;
@@ -14,15 +16,23 @@ import java.util.List;
 public class PostCommentServiceImpl implements PostCommentService {
     private final PostCommentDao postCommentDao;
     private final UserService userService;
+    private final PostCommentLikeService postCommentLikeService;
 
-    public PostCommentServiceImpl(PostCommentDao postCommentDao, UserService userService) {
+    public PostCommentServiceImpl(PostCommentDao postCommentDao, UserService userService, PostCommentLikeService postCommentLikeService) {
         this.postCommentDao = postCommentDao;
         this.userService = userService;
+        this.postCommentLikeService = postCommentLikeService;
     }
 
     @Override
-    public List<Comment> getCommentPageByPostId(Long postId, Long replyCommentId, Long commentId, Integer limit) {
-        return postCommentDao.getCommentPageByPostId(
+    public List<PostComment> getPostCommentPageByPostAndUserIds(
+            Long postId,
+            String userId,
+            Long replyCommentId,
+            Long commentId,
+            Integer limit
+    ) {
+        return postCommentDao.getPostCommentPageByPostId(
                         postId,
                         replyCommentId,
                         commentId,
@@ -30,50 +40,58 @@ public class PostCommentServiceImpl implements PostCommentService {
                 )
                 .stream()
                 .map(postCommentEntity ->
-                        new Comment(
+                        new PostComment(
                                 postCommentEntity.id(),
                                 userService.getUserById(postCommentEntity.userId()),
                                 postCommentEntity.postId(),
                                 postCommentEntity.replyCommentId(),
                                 postCommentEntity.content(),
                                 postCommentEntity.publicationDate(),
+                                postCommentLikeService.getPostCommentLikeCountByPostCommentId(postCommentEntity.id()),
+                                postCommentLikeService.isLikedPostComment(
+                                        new PostCommentLikeRequest(userId, postCommentEntity.id())
+                                ),
                                 postCommentEntity.isEdited()
                         )
                 ).toList();
     }
 
     @Override
-    public Comment getCommentById(Long commentId) {
-        PostCommentEntity postCommentEntity = postCommentDao.getCommentById(commentId)
+    public PostComment getPostCommentByCommentAndUserIds(Long postCommentId, String userId) {
+        PostCommentEntity postCommentEntity = postCommentDao.getPostCommentById(postCommentId)
                 .orElseThrow(CommentNotFoundException::new);
-        return new Comment(
+        return new PostComment(
                 postCommentEntity.id(),
                 userService.getUserById(postCommentEntity.userId()),
                 postCommentEntity.postId(),
                 postCommentEntity.replyCommentId(),
                 postCommentEntity.content(),
                 postCommentEntity.publicationDate(),
+                postCommentLikeService.getPostCommentLikeCountByPostCommentId(postCommentEntity.id()),
+                postCommentLikeService.isLikedPostComment(
+                        new PostCommentLikeRequest(userId, postCommentEntity.id())
+                ),
                 postCommentEntity.isEdited()
         );
     }
 
     @Override
-    public Long getCommentCountByPostId(Long postId) {
-        return postCommentDao.getCommentCountByPostId(postId);
+    public Long getPostCommentCountByPostId(Long postId) {
+        return postCommentDao.getPostCommentCountByPostId(postId);
     }
 
     @Override
-    public void insertComment(CommentRequest commentRequest) {
-        postCommentDao.insertComment(commentRequest);
+    public void insertPostComment(PostCommentRequest postCommentRequest) {
+        postCommentDao.insertPostComment(postCommentRequest);
     }
 
     @Override
-    public void updateComment(Long commentId, CommentRequest commentRequest) {
-        postCommentDao.updateComment(commentId, commentRequest);
+    public void updatePostComment(Long postCommentId, PostCommentRequest postCommentRequest) {
+        postCommentDao.updatePostComment(postCommentId, postCommentRequest);
     }
 
     @Override
-    public void deleteCommentById(Long commentId) {
-        postCommentDao.deleteCommentById(commentId);
+    public void deletePostCommentById(Long postCommentId) {
+        postCommentDao.deletePostCommentById(postCommentId);
     }
 }

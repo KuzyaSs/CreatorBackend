@@ -108,7 +108,7 @@ public class PostServiceImpl implements PostService {
                                 postTagService.getTagsByPostId(postEntity.id()),
                                 postSubscriptionService.getSubscriptionsByPostId(postEntity.id()),
                                 postLikeService.getLikeCountByPostId(postEntity.id()),
-                                postCommentService.getCommentCountByPostId(postEntity.id()),
+                                postCommentService.getPostCommentCountByPostId(postEntity.id()),
                                 postEntity.publicationDate(),
                                 postEntity.creatorId().equals(userId) || userSubscriptionService.isUserSubscribedBySubscriptionIds(
                                         userId,
@@ -176,7 +176,7 @@ public class PostServiceImpl implements PostService {
                                 postTagService.getTagsByPostId(postEntity.id()),
                                 postSubscriptionService.getSubscriptionsByPostId(postEntity.id()),
                                 postLikeService.getLikeCountByPostId(postEntity.id()),
-                                postCommentService.getCommentCountByPostId(postEntity.id()),
+                                postCommentService.getPostCommentCountByPostId(postEntity.id()),
                                 postEntity.publicationDate(),
                                 postEntity.creatorId().equals(userId) || userSubscriptionService.isUserSubscribedBySubscriptionIds(
                                         userId,
@@ -235,7 +235,7 @@ public class PostServiceImpl implements PostService {
                                 postTagService.getTagsByPostId(postEntity.id()),
                                 postSubscriptionService.getSubscriptionsByPostId(postEntity.id()),
                                 postLikeService.getLikeCountByPostId(postEntity.id()),
-                                postCommentService.getCommentCountByPostId(postEntity.id()),
+                                postCommentService.getPostCommentCountByPostId(postEntity.id()),
                                 postEntity.publicationDate(),
                                 postEntity.creatorId().equals(userId) || userSubscriptionService.isUserSubscribedBySubscriptionIds(
                                         userId,
@@ -263,7 +263,7 @@ public class PostServiceImpl implements PostService {
                                 postTagService.getTagsByPostId(postEntity.id()),
                                 postSubscriptionService.getSubscriptionsByPostId(postEntity.id()),
                                 postLikeService.getLikeCountByPostId(postEntity.id()),
-                                postCommentService.getCommentCountByPostId(postEntity.id()),
+                                postCommentService.getPostCommentCountByPostId(postEntity.id()),
                                 postEntity.publicationDate(),
                                 postEntity.creatorId().equals(userId) || userSubscriptionService.isUserSubscribedBySubscriptionIds(
                                         userId,
@@ -291,7 +291,7 @@ public class PostServiceImpl implements PostService {
                 postTagService.getTagsByPostId(postEntity.id()),
                 requiredSubscriptions,
                 postLikeService.getLikeCountByPostId(postEntity.id()),
-                postCommentService.getCommentCountByPostId(postEntity.id()),
+                postCommentService.getPostCommentCountByPostId(postEntity.id()),
                 postEntity.publicationDate(),
                 postEntity.creatorId().equals(userId) || userSubscriptionService.isUserSubscribedBySubscriptionIds(
                         userId,

@@ -4,7 +4,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
-import ru.ermakov.creator.feature.postComment.model.CommentRequest;
+import ru.ermakov.creator.feature.postComment.model.PostCommentRequest;
 import ru.ermakov.creator.feature.postComment.model.PostCommentEntity;
 import ru.ermakov.creator.feature.postComment.repository.mapper.PostCommentRowMapper;
 
@@ -22,7 +22,7 @@ public class PostCommentDaoImpl implements PostCommentDao {
     }
 
     @Override
-    public List<PostCommentEntity> getCommentPageByPostId(Long postId, Long replyCommentId, Long commentId, Integer limit) {
+    public List<PostCommentEntity> getPostCommentPageByPostId(Long postId, Long replyCommentId, Long postCommentId, Integer limit) {
         String query = """
                 SELECT *
                 FROM post_comment
@@ -35,7 +35,7 @@ public class PostCommentDaoImpl implements PostCommentDao {
                     """;
 
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
-                .addValue(ID_COLUMN, commentId)
+                .addValue(ID_COLUMN, postCommentId)
                 .addValue(POST_ID_COLUMN, postId)
                 .addValue(REPLY_COMMENT_ID_COLUMN, replyCommentId)
                 .addValue(LIMIT_PARAM, limit);
@@ -44,7 +44,7 @@ public class PostCommentDaoImpl implements PostCommentDao {
     }
 
     @Override
-    public Optional<PostCommentEntity> getCommentById(Long commentId) {
+    public Optional<PostCommentEntity> getPostCommentById(Long commentId) {
         String query = """
                 SELECT *
                 FROM post_comment
@@ -59,7 +59,7 @@ public class PostCommentDaoImpl implements PostCommentDao {
     }
 
     @Override
-    public Long getCommentCountByPostId(Long postId) {
+    public Long getPostCommentCountByPostId(Long postId) {
         String query = """
                 SELECT COUNT(*)
                 FROM post_comment
@@ -72,23 +72,23 @@ public class PostCommentDaoImpl implements PostCommentDao {
     }
 
     @Override
-    public void insertComment(CommentRequest commentRequest) {
+    public void insertPostComment(PostCommentRequest postCommentRequest) {
         String query = """
                 INSERT INTO post_comment (user_id, post_id, reply_comment_id, content)
                 VALUES (:user_id, :post_id, :reply_comment_id, :content)
                     """;
 
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
-                .addValue(USER_ID_COLUMN, commentRequest.userId())
-                .addValue(POST_ID_COLUMN, commentRequest.postId())
-                .addValue(REPLY_COMMENT_ID_COLUMN, commentRequest.replyCommentId())
-                .addValue(CONTENT_COLUMN, commentRequest.content());
+                .addValue(USER_ID_COLUMN, postCommentRequest.userId())
+                .addValue(POST_ID_COLUMN, postCommentRequest.postId())
+                .addValue(REPLY_COMMENT_ID_COLUMN, postCommentRequest.replyCommentId())
+                .addValue(CONTENT_COLUMN, postCommentRequest.content());
 
         jdbcTemplate.update(query, sqlParameterSource);
     }
 
     @Override
-    public void updateComment(Long commentId, CommentRequest commentRequest) {
+    public void updatePostComment(Long postCommentId, PostCommentRequest postCommentRequest) {
         String query = """
                 UPDATE post_comment
                 SET content = :content,
@@ -97,20 +97,20 @@ public class PostCommentDaoImpl implements PostCommentDao {
                     """;
 
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
-                .addValue(CONTENT_COLUMN, commentRequest.content())
-                .addValue(ID_COLUMN, commentId);
+                .addValue(CONTENT_COLUMN, postCommentRequest.content())
+                .addValue(ID_COLUMN, postCommentId);
 
         jdbcTemplate.update(query, sqlParameterSource);
     }
 
     @Override
-    public void deleteCommentById(Long commentId) {
+    public void deletePostCommentById(Long postCommentId) {
         String query = """
                 DELETE FROM post_comment
                 WHERE id = :id
                     """;
 
-        SqlParameterSource sqlParameterSource = new MapSqlParameterSource(ID_COLUMN, commentId);
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource(ID_COLUMN, postCommentId);
 
         jdbcTemplate.update(query, sqlParameterSource);
     }
