@@ -31,6 +31,7 @@ public final class ParamNameConstants {
     public static final String TRANSACTION_DATE_COLUMN = "transaction_date";
     public static final String CREDIT_GOAL_ID_COLUMN = "credit_goal_id";
     public static final String POST_ID_COLUMN = "post_id";
+    public static final String POST_COMMENT_ID_COLUMN = "post_comment_id";
     public static final String TAG_ID_COLUMN = "tag_id";
     public static final String URL_COLUMN = "url";
     public static final String CONTENT_COLUMN = "content";
