@@ -41,7 +41,7 @@ public class PostCommentLikeDaoImpl implements PostCommentLikeDao {
 
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
                 .addValue(USER_ID_COLUMN, postCommentLikeRequest.userId())
-                .addValue(POST_ID_COLUMN, postCommentLikeRequest.postCommentId());
+                .addValue(POST_COMMENT_ID_COLUMN, postCommentLikeRequest.postCommentId());
 
         jdbcTemplate.update(query, sqlParameterSource);
     }

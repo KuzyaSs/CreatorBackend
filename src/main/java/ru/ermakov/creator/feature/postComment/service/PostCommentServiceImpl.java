@@ -29,13 +29,13 @@ public class PostCommentServiceImpl implements PostCommentService {
             Long postId,
             String userId,
             Long replyCommentId,
-            Long commentId,
+            Long postCommentId,
             Integer limit
     ) {
         return postCommentDao.getPostCommentPageByPostId(
                         postId,
                         replyCommentId,
-                        commentId,
+                        postCommentId,
                         limit
                 )
                 .stream()

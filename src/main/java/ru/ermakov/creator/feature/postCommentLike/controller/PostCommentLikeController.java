@@ -18,7 +18,7 @@ public class PostCommentLikeController {
         postCommentLikeService.insertPostCommentLike(postCommentLikeRequest);
     }
 
-    @PutMapping("{postCommentId}/likes")
+    @DeleteMapping("{postCommentId}/likes")
     public void deletePostCommentLike(
             @PathVariable("postCommentId") Long postCommentId,
             @RequestParam String userId

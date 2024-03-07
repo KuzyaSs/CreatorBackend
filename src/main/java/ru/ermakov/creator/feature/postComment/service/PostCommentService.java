@@ -10,7 +10,7 @@ public interface PostCommentService {
             Long postId,
             String userId,
             Long replyCommentId,
-            Long commentId,
+            Long postCommentId,
             Integer limit
     );
 

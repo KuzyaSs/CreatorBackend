@@ -19,7 +19,9 @@ public class PostCommentLikeServiceImpl implements PostCommentLikeService {
 
     @Override
     public void insertPostCommentLike(PostCommentLikeRequest postCommentLikeRequest) {
-        postCommentLikeDao.insertPostCommentLike(postCommentLikeRequest);
+        if (!isLikedPostComment(postCommentLikeRequest)) {
+            postCommentLikeDao.insertPostCommentLike(postCommentLikeRequest);
+        }
     }
 
     @Override

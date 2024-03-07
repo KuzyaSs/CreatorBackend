@@ -17,19 +17,19 @@ public class PostCommentController {
     }
 
     @GetMapping("{postId}/comments")
-    List<PostComment> getPostCommentPageByPostAndUserId(
+    List<PostComment> getPostCommentPageByPostAndUserIds(
             @PathVariable(name = "postId") Long postId,
             @RequestParam("userId") String userId,
             @RequestParam(required = false, defaultValue = "-1") Long replyCommentId,
-            @RequestParam Long commentId,
+            @RequestParam Long postCommentId,
             @RequestParam Integer limit
     ) {
-        return postCommentService.getPostCommentPageByPostAndUserIds(postId, userId, replyCommentId, commentId, limit);
+        return postCommentService.getPostCommentPageByPostAndUserIds(postId, userId, replyCommentId, postCommentId, limit);
     }
 
     @GetMapping("comments/{postCommentId}")
     PostComment getPostCommentByCommentAndUserIds(
-            @PathVariable(name = "commentId") Long postCommentId,
+            @PathVariable(name = "postCommentId") Long postCommentId,
             @RequestParam("userId") String userId
     ) {
         return postCommentService.getPostCommentByCommentAndUserIds(postCommentId, userId);
