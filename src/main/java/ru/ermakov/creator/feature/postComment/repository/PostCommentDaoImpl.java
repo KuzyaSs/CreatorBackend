@@ -72,10 +72,11 @@ public class PostCommentDaoImpl implements PostCommentDao {
     }
 
     @Override
-    public void insertPostComment(PostCommentRequest postCommentRequest) {
+    public Long insertPostComment(PostCommentRequest postCommentRequest) {
         String query = """
                 INSERT INTO post_comment (user_id, post_id, reply_comment_id, content)
                 VALUES (:user_id, :post_id, :reply_comment_id, :content)
+                RETURNING ID
                     """;
 
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
@@ -84,7 +85,7 @@ public class PostCommentDaoImpl implements PostCommentDao {
                 .addValue(REPLY_COMMENT_ID_COLUMN, postCommentRequest.replyCommentId())
                 .addValue(CONTENT_COLUMN, postCommentRequest.content());
 
-        jdbcTemplate.update(query, sqlParameterSource);
+        return jdbcTemplate.queryForObject(query, sqlParameterSource, Long.class);
     }
 
     @Override

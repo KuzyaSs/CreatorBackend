@@ -36,8 +36,8 @@ public class PostCommentController {
     }
 
     @PostMapping("comments")
-    void insertPostComment(@RequestBody PostCommentRequest postCommentRequest) {
-        postCommentService.insertPostComment(postCommentRequest);
+    Long insertPostComment(@RequestBody PostCommentRequest postCommentRequest) {
+        return postCommentService.insertPostComment(postCommentRequest);
     }
 
     @PutMapping("comments/{postCommentId}")

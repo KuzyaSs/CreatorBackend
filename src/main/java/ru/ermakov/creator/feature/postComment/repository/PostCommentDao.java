@@ -18,7 +18,7 @@ public interface PostCommentDao {
 
     Long getPostCommentCountByPostId(Long postId);
 
-    void insertPostComment(PostCommentRequest postCommentRequest);
+    Long insertPostComment(PostCommentRequest postCommentRequest);
 
     void updatePostComment(Long postCommentId, PostCommentRequest postCommentRequest);
 

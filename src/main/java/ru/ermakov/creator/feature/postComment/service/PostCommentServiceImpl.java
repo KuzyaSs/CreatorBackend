@@ -81,8 +81,8 @@ public class PostCommentServiceImpl implements PostCommentService {
     }
 
     @Override
-    public void insertPostComment(PostCommentRequest postCommentRequest) {
-        postCommentDao.insertPostComment(postCommentRequest);
+    public Long insertPostComment(PostCommentRequest postCommentRequest) {
+        return postCommentDao.insertPostComment(postCommentRequest);
     }
 
     @Override
